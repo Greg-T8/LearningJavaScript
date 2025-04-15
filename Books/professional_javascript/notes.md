@@ -32,4 +32,4 @@ Calling `typeof null` returns an object, as the special value `null` is consider
 **The `Null` Type**
 - Like `undefined`, the Null type has only one value: `null`.
 - When declaring a variable intended to hold an object, it's best to initialize it to null. This makes it easy to check later whether the variable has been assigned an object reference.
-- 
+- See [02-null_type.js](ch03/02-null_type.js) for examples.
