@@ -12,7 +12,7 @@ console.log("\nCode block 2")
 // mainly for comparison to help formalize the difference between an empty
 // object pointer (null) and an uninitialized variable.
 {
-  message = undefined;
+  // message = undefined;
   // console.log(message == undefined) // Throws an error in strict mode; true otherwise.
 }
 
@@ -28,11 +28,11 @@ console.log("\nCode block 4")
   console.log(message);  // undefined - declared but has a value of undefined
 }
 
+console.log("\nCode block 5")
 // The only one useful operation that can be performed on an undeclared variable
 // is to call `typeof` on it.
-console.log("\nCode block 5")
 {
-  let message;  // declared but has a value of undefined
+  let message; // declared but has a value of undefined
   // let age;
 
   console.log(typeof message);  // undefined - declared but has a value of undefined
@@ -40,7 +40,21 @@ console.log("\nCode block 5")
 }
 
 console.log("\nCode block 6")
+// Undefined is falsy
 {
-
+  let message; // variable is declared but has a value of undefined
+  
+  if (message) {
+    console.log('This block does not execute.')
+  }
+  
+  if (!message) {
+    console.log('This block executes.')
+  }
+  
+  // 'age' is not declared
+  // if (age) {
+  //   // throws an error
+  // }
 
 }
