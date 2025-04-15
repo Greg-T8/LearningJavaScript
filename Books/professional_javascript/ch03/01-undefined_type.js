@@ -1,3 +1,12 @@
+/*
+ * Program: Undefined Type Examples
+ * Context: Chapter 3 - Professional JavaScript for Web Developers
+ * Author: Greg Tate
+ * Date: 2025-04-15
+ * Description: This program demonstrates the Undefined type in JavaScript,
+ *              including its behavior, use cases, and relationship with null.
+ */
+
 "use strict";
 
 console.log("\nCode block 1")
