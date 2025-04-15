@@ -9,7 +9,7 @@ console.log("\nCode block 1");
 
 console.log("\nCode block 2");
 // Always initialize a variable to null when you want to assign something to it
-// later. This allows you to explicitly check for null
+// later. This allows you to explicitly check for null.
 {
   let car = null;
   if (car != null) {
