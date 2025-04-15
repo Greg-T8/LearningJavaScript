@@ -25,4 +25,11 @@ Returns one of the following strings:
 Calling `typeof null` returns an object, as the special value `null` is considered to be an empty object reference.
 
 **The `Undefined` Type**  
-See [01-undefined_type.js](ch03/01-undefined_type.js) for examples.
+- Uninitialized variables are `undefined`. 
+- `undefined` is falsy, but be careful in scenarios where you need to test for an exact value of undefined rather than just a falsy value.
+- See [01-undefined_type.js](ch03/01-undefined_type.js) for examples.
+
+**The `Null` Type**
+- Like `undefined`, the Null type has only one value: `null`.
+- When declaring a variable intended to hold an object, it's best to initialize it to null. This makes it easy to check later whether the variable has been assigned an object reference.
+- 
