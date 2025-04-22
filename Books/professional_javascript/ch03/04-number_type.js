@@ -106,3 +106,4 @@ console.log("\nCode block 11");
   let num3 = Number("000011");       // 11
   let num4 = Number(true);           // 1
 }
+
