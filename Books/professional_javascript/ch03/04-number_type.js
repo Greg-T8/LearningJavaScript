@@ -107,3 +107,20 @@ console.log("\nCode block 11");
   let num4 = Number(true);           // 1
 }
 
+console.log("\nCode block 12");
+// Using ParseInt()
+{
+  console.log(parseInt("1234blue") );     // 1234
+  console.log(parseInt("") );             // NaN
+  console.log(parseInt("0xA") );          // 10 - hexadecimal
+  console.log(parseInt(22.5) );           // 22 - ignores decimal part
+  console.log(parseInt("70") );           // 70 - decimal
+  console.log(parseInt("0xf") );          // 15 - hexadecimal
+  console.log(parseInt("0xAF", 16));       // 175 - providing 16 radix to parse as hexadecimal
+  console.log(parseInt("AF", 16));         // 175 - providing 16 radix to parse as hexadecimal; can leave off 0x
+  console.log(parseInt("AF"));             // NaN - no radix provided, so it defaults to 10
+  console.log(parseInt("10", 2));          // 2 - binary
+  console.log(parseInt("10", 8));          // 8 - octal
+  console.log(parseInt("10", 10));         // 10 - decimal
+  console.log(parseInt("10", 16));         // 16 - hexadecimal
+}
