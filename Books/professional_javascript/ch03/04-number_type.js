@@ -45,7 +45,7 @@ console.log("\nCode block 4");
 }
 
 console.log("\nCode block 5");
-// Floating-point values 
+// Floating-point values
 {
   // To define a floating-point value, include at least one
   // number after the decimal point.
@@ -79,4 +79,30 @@ console.log("\nCode block 8");
 
   // Invalid numeric separator
   // let num3 = _1000;              // Syntax error
+}
+
+console.log("\nCode block 9");
+{
+  let result = Number.MAX_VALUE + Number.MAX_VALUE;
+  console.log(isFinite(result)); // false
+}
+
+console.log("\nCode block 10");
+{
+  console.log(NaN === NaN);         // false
+  console.log(isNaN(NaN));          // true
+  console.log(isNaN(10));           // false -- 10 is a number
+  console.log(isNaN("10"));         // false -- "10" can be converted to a number
+  console.log(isNaN("Hello"));      // true -- "Hello" cannot be converted to a number
+  console.log(isNaN(true));         // false -- true can be converted to 1
+}
+
+
+console.log("\nCode block 11");
+// Number conversions
+{
+  let num1 = Number("Hello world!"); // NaN
+  let num2 = Number("");             // 0
+  let num3 = Number("000011");       // 11
+  let num4 = Number(true);           // 1
 }
