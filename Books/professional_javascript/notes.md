@@ -70,7 +70,7 @@ For N/A, there are no values where undefined is converted to true.
 
 See [04-number_type.js](./ch03/04-number_type.js) for examples.
 
-Range of values:
+**Range of values:**
 - `Number.MIN_VALUE` is the smallest positive number that can be represented in JavaScript and is approximately 5e-324.
 - `Number.MAX_VALUE` is the largest positive number that can be represented in JavaScript and is approximately 1.7976931348623157e+308.
 - `Infinity` is any positive number that can't be represented.
@@ -99,5 +99,20 @@ Range of values:
   - `Number()`: Converts a value to a number. If the value cannot be converted, it returns `NaN`.
   - `parseInt()`: Converts a string to an integer. If the string cannot be converted, it returns `NaN`. It ignores leading whitespace and stops parsing at the first non-numeric character.
   - `parseFloat()`: Converts a string to a floating-point number. It ignores leading whitespace and stops parsing at the first non-numeric character.
+- The `Number()` function as a lot of complexities hwen converting string, so the author recommends using `parseInt()`  when you are dealing with integers.
 
-
+```js
+  console.log(parseInt("1234blue") );      // 1234
+  console.log(parseInt("") );              // NaN
+  console.log(parseInt("0xA") );           // 10 - hexadecimal
+  console.log(parseInt(22.5) );            // 22 - ignores decimal part
+  console.log(parseInt("70") );            // 70 - decimal
+  console.log(parseInt("0xf") );           // 15 - hexadecimal
+  console.log(parseInt("0xAF", 16));       // 175 - providing 16 radix to parse as hexadecimal
+  console.log(parseInt("AF", 16));         // 175 - providing 16 radix to parse as hexadecimal; can leave off 0x
+  console.log(parseInt("AF"));             // NaN - no radix provided, so it defaults to 10
+  console.log(parseInt("10", 2));          // 2 - binary
+  console.log(parseInt("10", 8));          // 8 - octal
+  console.log(parseInt("10", 10));         // 10 - decimal
+  console.log(parseInt("10", 16));         // 16 - hexadecimal
+```
