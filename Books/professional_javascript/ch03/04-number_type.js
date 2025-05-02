@@ -101,10 +101,14 @@ console.log("\nCode block 10");
 console.log("\nCode block 11");
 // Number conversions
 {
-  let num1 = Number("Hello world!"); // NaN
-  let num2 = Number("");             // 0
-  let num3 = Number("000011");       // 11
-  let num4 = Number(true);           // 1
+  console.log(Number("Hello world!")); // NaN
+  console.log(Number(""));             // 0
+  console.log(Number(null));           // 0
+  console.log(Number(undefined));      // NaN
+  console.log(Number("000011"));       // 11
+  console.log(Number("1.52"));         // 1.52
+  console.log(Number("-56"));          // -56
+  console.log(Number(true));           // 1
 }
 
 console.log("\nCode block 12");
@@ -123,4 +127,28 @@ console.log("\nCode block 12");
   console.log(parseInt("10", 8));          // 8 - octal
   console.log(parseInt("10", 10));         // 10 - decimal
   console.log(parseInt("10", 16));         // 16 - hexadecimal
+}
+
+console.log("\nCode block 13");
+// using ParseFloat()
+{
+  console.log(parseFloat("1234blue")); // 1234 - integer
+  console.log(parseFloat("0xA"));      // 0
+  console.log(parseFloat("22.5"));     // 22.5
+  console.log(parseFloat("22.34.5"));  // 22.34
+  console.log(parseFloat("0908.5"));   // 908.5
+  console.log(parseFloat("3.125e7"));  // 31250000
+}
+
+console.log("\nCode block 14");
+// using BigInt()
+{
+  console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
+  console.log(2**53);                   // 9007199254740992 - not safe
+  console.log(BigInt(12345));           // 12345n - BigInt
+  console.log(BigInt(0x12345));         // 74565n - hexadecimal to BigInt
+  console.log(BigInt("12345"));         // 12345n - string to BigInt
+  console.log(BigInt("0o12345"));       // 5349n - octal to BigInt
+  console.log(123n + 456n);             // 579n - BigInt addition
+  //console.log(123n + 456);              // TypeError - cannot mix BigInt and Number
 }

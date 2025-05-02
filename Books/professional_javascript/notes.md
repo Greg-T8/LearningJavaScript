@@ -9,7 +9,7 @@
 
 </details>
 
-## Language Basics
+## 3. Language Basics
 
 **Declaration Best Practices**
 - Don't use `var`
@@ -17,7 +17,8 @@
 
 ### Data Types
 
-**The `typeof` Operator**  
+#### The `typeof` Operator
+
 Returns one of the following strings:
 - "undefined" if the value is undefined
 - "boolean" if the value is a boolean
@@ -57,7 +58,8 @@ For N/A, there are no values where undefined is converted to true.
 
 - See [03-boolean_type.js](ch03/03-boolean_type.js) for examples.
 
-#### The `Number` Type`
+#### The `Number` Type
+
 - There are several literal formats of number types:
   - Decimal: `1234`, `0.1234`, `1.234e+2`, `1.234e-2`
   - Hexadecimal: `0xFF`, `0x1A3F`
@@ -99,7 +101,18 @@ See [04-number_type.js](./ch03/04-number_type.js) for examples.
   - `Number()`: Converts a value to a number. If the value cannot be converted, it returns `NaN`.
   - `parseInt()`: Converts a string to an integer. If the string cannot be converted, it returns `NaN`. It ignores leading whitespace and stops parsing at the first non-numeric character.
   - `parseFloat()`: Converts a string to a floating-point number. It ignores leading whitespace and stops parsing at the first non-numeric character.
-- The `Number()` function as a lot of complexities hwen converting string, so the author recommends using `parseInt()`  when you are dealing with integers.
+- The `Number()` function as a lot of complexities when converting string, so the author recommends using `parseInt()`  when you are dealing with integers.
+
+```js
+  console.log(Number("Hello world!")); // NaN
+  console.log(Number(""));             // 0
+  console.log(Number(null));           // 0
+  console.log(Number(undefined));      // NaN
+  console.log(Number("000011"));       // 11
+  console.log(Number("1.52"));         // 1.52
+  console.log(Number("-56"));          // -56
+  console.log(Number(true));           // 1
+```
 
 ```js
   console.log(parseInt("1234blue") );      // 1234
@@ -116,3 +129,38 @@ See [04-number_type.js](./ch03/04-number_type.js) for examples.
   console.log(parseInt("10", 10));         // 10 - decimal
   console.log(parseInt("10", 16));         // 16 - hexadecimal
 ```
+>Note: most of the time you'll be parsing decimal numbers, so it's good to always include the 10 as the radix argument.
+
+```js
+  console.log(parseFloat("1234blue")); // 1234 - integer
+  console.log(parseFloat("0xA"));      // 0
+  console.log(parseFloat("22.5"));     // 22.5
+  console.log(parseFloat("22.34.5"));  // 22.34
+  console.log(parseFloat("0908.5"));   // 908.5
+  console.log(parseFloat("3.125e7"));  // 31250000
+```
+Things to note:
+- A decimal point is valid the first time it appears in a string, but a second decimal point is invalid and the rest of the string is ignored.
+- Initial zeros are ignored, but a leading zero followed by a decimal point is not ignored.
+- If the string represents a whole number, `parseFloat()` will return an integer.
+
+#### The `BigInt` Type
+
+- Use `BigInt` when dealing with large integers that exceed `Number.MAX_SAFE_INTEGER`, which is 9007199254740991.
+- `BigInt` allocates an object in memory to represent arbitrarily large integers that cannot fit inside a CPU register.
+- Use a `BigInt` value only when dealing with values greater than 2^53.
+
+```js
+  console.log(Number.MAX_SAFE_INTEGER); // 9007199254740991
+  console.log(2**53);                   // 9007199254740992 - not safe
+  console.log(BigInt(12345));           // 12345n - BigInt
+  console.log(BigInt(0x12345));         // 74565n - hexadecimal to BigInt
+  console.log(BigInt("12345"));         // 12345n - string to BigInt
+  console.log(BigInt("0o12345"));       // 5349n - octal to BigInt
+  console.log(123n + 456n);             // 579n - BigInt addition
+  console.log(123n + 456);              // TypeError - cannot mix BigInt and Numbert
+```
+- A `BigInt` is similar to a `Number`, but the two types cannot be mixed when using arithmetic or bitwise operators.
+- A `BigInt` cannot be used with any built-in `Math` methods.
+
+
