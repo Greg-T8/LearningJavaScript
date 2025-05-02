@@ -236,3 +236,21 @@ Things to note:
 
 #### The `String` Type
 
+- The `String` type represents a sequence of one or more 16-bit Unicode characters.
+- Strings can be delineated by single quotes, double quotes, or backticks (template literals).
+
+##### Character Literals
+
+| LITERAL | MEANING                                                                                                  |
+| ------- | -------------------------------------------------------------------------------------------------------- |
+| \n      | New line                                                                                                 |
+| \t      | Tab                                                                                                      |
+| \b      | Backspace                                                                                                |
+| \r      | Carriage return                                                                                          |
+| \f      | Form feed                                                                                                |
+| \\      | Backslash (\)                                                                                            |
+| \'      | Single quote (')—used when the string is delineated by single quotes. Example: 'He said, \'hey.\''.      |
+| \"      | Double quote (")—used when the string is delineated by double quotes. Example: "He said, \"hey.\""       |
+| \`      | Backtick (\`)—used when the string is delineated by backticks. Example: \`He said, \`hey.\`\`.            |
+| \xnn    | A character represented by hexadecimal code nn (where n is a hexadecimal digit 0-F). Example: \x41 = "A" |
+| \unnnn  | A Unicode character represented by the hexadecimal code nnnn (0-F). Example: \u03a3 = Greek Σ            |
