@@ -1,4 +1,4 @@
-# Notes on Professional JavaScript for Web Developers
+# Notes on Professional JavaScript for Web Developers by Matt Frisbie
 
 <img src='images/20250407025456.png' width='250'/>
 
