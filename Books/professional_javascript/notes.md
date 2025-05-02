@@ -158,9 +158,81 @@ Things to note:
   console.log(BigInt("12345"));         // 12345n - string to BigInt
   console.log(BigInt("0o12345"));       // 5349n - octal to BigInt
   console.log(123n + 456n);             // 579n - BigInt addition
-  console.log(123n + 456);              // TypeError - cannot mix BigInt and Numbert
+  console.log(123n + 456);              // TypeError - cannot mix BigInt and Number
 ```
 - A `BigInt` is similar to a `Number`, but the two types cannot be mixed when using arithmetic or bitwise operators.
 - A `BigInt` cannot be used with any built-in `Math` methods.
 
+##### `BigInt` Conversions
+
+```js
+  console.log(123n === BigInt(123));                // true - BigInt comparison
+  console.log(123 === Number(123n));                // true - Number comparison
+  // Note: loss of precision may occur when converting large BigInt to Number
+  console.log(Number(BigInt(100000000000054321)));  // 100000000000054320
+  console.log(Number(54321n + BigInt(1e16)));       // 10000000000054320
+  console.log(BigInt(0.5));                         // Range error - cannot convert to BigInt because it is not an integer
+```
+
+##### `BigInt` Operators
+
+```js
+  console.log(10n ** 2n);           // 100n - exponentiation
+  console.log(100n / 3n);           // 33n - division
+  console.log(16n | 8n);            // 24n - bitwise OR
+  console.log(-8n + -8n);           // -16n - addition
+  console.log(4n > 3);              // true - comparison
+  console.log([5n, 1, 3n].sort());  // [1, 3n, 5n] - sortinn
+```
+- Two operators are not supported with `BigInt`:
+  - The zero-fill right shift operator `>>>`.
+  - The unary `+` operator.
+- Although mixing is not allowed with aritemetic and bitwise operators, you can still use comparison operators and sorting.
+
+##### `BigInt` Static Methods
+
+- `BigInt` has two static methods for clamping integers. Clamping means truncating it to a given number of least significant bits.
+  - `BigInt.asIntN(width, x)`: Clamps the integer `x` to a signed integer of `width` bits.
+  - `BigInt.asUintN(width, x)`: Clamps the integer `x` to an unsigned integer of `width` bits.
+- A `BigInt` is represented in memory as a 2's complement signed integer, so clamping methods must be used with caution, as they could result in unexpected numbers.
+
+```js
+  // Clamps 0011000 to 1000
+  console.log(BigInt.asIntN(4, 24n));   // -8n, given 2's complement representation
+  console.log(BigInt.asUintN(4, 24n));  // 8n
+  // Clamps 11111111 to 1111
+  console.log(BigInt.asIntN(4, -1n));   // -1n, given 2's complement representation
+  console.log(BigInt.asUintN(4, -1n));  // 15n
+  // Clamps 00010000 to 10000
+  console.log(BigInt.asIntN(5, 16n));   // -16n, given 2's complement representation
+  // Clamps 00010000 to 010000
+  console.log(BigInt.asIntN(6, 16n));   // 16n, given 2's complement representation
+```
+
+##### Using `BigInt` with JSON
+
+- `BigInt` does not support JSON serialization, so you need to convert it to a string before using `JSON.stringify()`.
+- You can provide replacer and reviver methods to convert in and out:
+```js
+  let data = {
+    bigNumber: 1234n
+  };
+
+  // JSON.stringify(data); // TypeError: BigInt value cannot be serialized to JSON
+
+  console.log(data.bigNumber.toString()); // "1234"
+
+  // To serialize BigInt, convert it to string or number first using a replacer function
+  // k represents the key, v represents the value
+  const replacer = (k, v) => typeof v === 'bigint' ? v.toString() : v;
+
+  // Serialize the object with BigInt
+  console.log(JSON.stringify(data, replacer)); // {"bigNumber":"1234"}
+
+  // Deserialize the object with BigInt
+  const reviver = (k, v) => k === "bigNumber" ? BigInt(v) : v;
+  console.log(JSON.parse(`{"bigNumber": "1234"}`, reviver)); // { bigNumber: 1234n }
+```
+
+#### The `String` Type
 

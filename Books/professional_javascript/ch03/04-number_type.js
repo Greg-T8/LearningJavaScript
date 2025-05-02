@@ -152,3 +152,63 @@ console.log("\nCode block 14");
   console.log(123n + 456n);             // 579n - BigInt addition
   //console.log(123n + 456);              // TypeError - cannot mix BigInt and Number
 }
+
+console.log("\nCode block 15");
+// BigInt conversions
+{
+  console.log(123n === BigInt(123));                // true - BigInt comparison
+  console.log(123 === Number(123n));                // true - Number comparison
+  // Note: loss of precision may occur when converting large BigInt to Number
+  console.log(Number(BigInt(100000000000054321)));  // 100000000000054320
+  console.log(Number(54321n + BigInt(1e16)));       // 10000000000054320
+  // console.log(BigInt(0.5));                         // Range error - cannot convert to BigInt because it is not an integer
+}
+
+console.log("\nCode block 16");
+// BigInt operators
+{
+  console.log(10n ** 2n);           // 100n - exponentiation
+  console.log(100n / 3n);           // 33n - division
+  console.log(16n | 8n);            // 24n - bitwise OR
+  console.log(-8n + -8n);           // -16n - addition
+  console.log(4n > 3);              // true - comparison
+  console.log([5n, 1, 3n].sort());  // [1, 3n, 5n] - sorting
+}
+
+console.log("\nCode block 17");
+// Clamping BigInt values
+{
+  // Clamps 0011000 to 1000
+  console.log(BigInt.asIntN(4, 24n));   // -8n, given 2's complement representation
+  console.log(BigInt.asUintN(4, 24n));  // 8n
+  // Clamps 11111111 to 1111
+  console.log(BigInt.asIntN(4, -1n));   // -1n, given 2's complement representation
+  console.log(BigInt.asUintN(4, -1n));  // 15n
+  // Clamps 00010000 to 10000
+  console.log(BigInt.asIntN(5, 16n));   // -16n, given 2's complement representation
+  // Clamps 00010000 to 010000
+  console.log(BigInt.asIntN(6, 16n));   // 16n, given 2's complement representation
+}
+
+console.log("\nCode block 18");
+// BigInt and JSON
+{
+  let data = {
+    bigNumber: 1234n
+  };
+
+  // JSON.stringify(data); // TypeError: BigInt value cannot be serialized to JSON
+
+  console.log(data.bigNumber.toString()); // "1234"
+
+  // To serialize BigInt, convert it to string or number first using a replacer function
+  // k represents the key, v represents the value
+  const replacer = (k, v) => typeof v === 'bigint' ? v.toString() : v;
+
+  // Serialize the object with BigInt
+  console.log(JSON.stringify(data, replacer)); // {"bigNumber":"1234"}
+
+  // Deserialize the object with BigInt
+  const reviver = (k, v) => k === "bigNumber" ? BigInt(v) : v;
+  console.log(JSON.parse(`{"bigNumber": "1234"}`, reviver)); // { bigNumber: 1234n }
+}
