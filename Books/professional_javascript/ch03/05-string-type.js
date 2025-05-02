@@ -90,3 +90,16 @@ console.log("\nCode block 6");
   }
   console.log(`${capitalize('hello')}, ${capitalize('world')}!`); // Hello, World!
 }
+
+console.log("\nCode block 7");
+// Templates can safely interpolate their previous value
+{
+  let value = '';
+  function append() {
+    value = `${value}abc`
+    console.log(value);
+  }
+  append(); // abc
+  append(); // abcabc
+  append(); // abcabcabc
+}

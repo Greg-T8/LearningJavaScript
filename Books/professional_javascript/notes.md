@@ -9,6 +9,21 @@
 
 </details>
 
+<details>
+<summary>Table of Contents</summary>
+
+- [3. Language Basics](#3-language-basics)
+  - [Data Types](#data-types)
+    - [The `typeof` Operator](#the-typeof-operator)
+    - [The `Undefined` Type](#the-undefined-type)
+    - [The `Null` Type](#the-null-type)
+    - [The `Boolean` Type](#the-boolean-type)
+    - [The `Number` Type](#the-number-type)
+    - [The `BigInt` Type](#the-bigint-type)
+    - [The `String` Type](#the-string-type)
+
+</details>
+
 ## 3. Language Basics
 
 **Declaration Best Practices**
@@ -96,7 +111,7 @@ See [04-number_type.js](./ch03/04-number_type.js) for examples.
 ```
 - When `NaN` is used against objects, the object's `valueOf()` method is called to determine if it can be converted to a number. If it can't, `NaN` is returned.
 
-#### Number Conversions
+##### Number Conversions
 - There are three functions to convert nonnumeric values into numbers:
   - `Number()`: Converts a value to a number. If the value cannot be converted, it returns `NaN`.
   - `parseInt()`: Converts a string to an integer. If the string cannot be converted, it returns `NaN`. It ignores leading whitespace and stops parsing at the first non-numeric character.
@@ -303,7 +318,7 @@ The `String()` function follows these rules:
   - If the value is `null`, it returns the string "null".
   - If the value is `undefined`, it returns the string "undefined".
 
-#### Template Literals
+##### Template Literals
 
 - Template literals are enclosed in backticks (`` ` ``) and can span multiple lines.
 ```js
@@ -322,7 +337,7 @@ second line`;
   console.log(myMultiLineString === myMultiLineTemplateLiteral); // true
 ```
 
-#### Interpolation
+##### Interpolation
 
 - Template literals support string interpolation, allowing you to embed expressions inside the string using `${}` syntax.
 ```js
@@ -355,3 +370,17 @@ Template literals also support expressions:
   }
   console.log(`${capitalize('hello')}, ${capitalize('world')}!`); // Hello, World!
 ```
+
+Template literals can safely interpolate their previous value:
+```js
+  let value = '';
+  function append() {
+    value = `${value}abc`
+    console.log(value);
+  }
+  append(); // abc
+  append(); // abcabc
+  append(); // abcabcabc
+```
+
+##### Template Literal Tag Functions
