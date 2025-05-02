@@ -38,3 +38,55 @@ console.log("\nCode block 3");
   console.log(String(value3)); // "null"
   console.log(String(value4)); // "undefined"
 }
+
+console.log("\nCode block 4");
+// Template literals
+{
+  let myMultiLineString = 'first line\nsecond line';
+  let myMultiLineTemplateLiteral = `first line
+second line`;
+
+  console.log(myMultiLineString);
+  // first line
+  // second line
+
+  console.log(myMultiLineTemplateLiteral);
+  // first line
+  // second line
+
+  console.log(myMultiLineString === myMultiLineTemplateLiteral); // true
+}
+
+console.log("\nCode block 5");
+// Interpolation with template literals
+{
+  let value = 5;
+  let exponent = 'second';
+
+  // Prior to interpolation, we would have to use concatenation
+  let interpolatedString = value + 'to the ' + exponent + ' power is ' + (value * value);
+
+  // The same thing accomplished with template literals
+  let interpolatedTemplateLiteral = `${value} to the ${exponent} power is ${value * value}`;
+
+  console.log(interpolatedString);           // 5 to the second power is 25
+  console.log(interpolatedTemplateLiteral);  // 5 to the second power is 25
+}
+
+console.log("\nCode block 6");
+// String interpolation with expressions
+{
+  console.log(`Hello, ${`World`}!`); // Hello, World!
+
+  // `String()` is invoked to coerce the expression to a string
+  let foo = { toString: () => 'World' };
+  console.log(`Hello, ${foo}!`);
+
+  // Invoking functions and methods inside interpolated expressions
+  // `word[0]` is the first character of the string
+  // `word.slice(1)` is the rest of the string, starting from the second character
+  function capitalize(word) {
+    return `${word[0].toUpperCase()}${word.slice(1)}`;
+  }
+  console.log(`${capitalize('hello')}, ${capitalize('world')}!`); // Hello, World!
+}

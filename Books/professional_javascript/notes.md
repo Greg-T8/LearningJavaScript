@@ -302,3 +302,56 @@ The `String()` function follows these rules:
   - If the value has a `toString()` method, it calls that method and returns the result.
   - If the value is `null`, it returns the string "null".
   - If the value is `undefined`, it returns the string "undefined".
+
+#### Template Literals
+
+- Template literals are enclosed in backticks (`` ` ``) and can span multiple lines.
+```js
+  let myMultiLineString = 'first line\nsecond line';
+  let myMultiLineTemplateLiteral = `first line
+second line`;
+
+  console.log(myMultiLineString);
+  // first line
+  // second line
+
+  console.log(myMultiLineTemplateLiteral);
+  // first line
+  // second line
+
+  console.log(myMultiLineString === myMultiLineTemplateLiteral); // true
+```
+
+#### Interpolation
+
+- Template literals support string interpolation, allowing you to embed expressions inside the string using `${}` syntax.
+```js
+  let value = 5;
+  let exponent = 'second';
+
+  // Prior to interpolation, we would have to use concatenation
+  let interpolatedString = value + 'to the ' + exponent + ' power is ' + (value * value);
+
+  // The same thing accomplished with template literals
+  let interpolatedTemplateLiteral = `${value} to the ${exponent} power is ${value * value}`;
+
+  console.log(interpolatedString);           // 5 to the second power is 25
+  console.log(interpolatedTemplateLiteral);  // 5 to the second power is 25
+```
+
+Template literals also support expressions:
+```js
+  console.log(`Hello, ${`World`}!`); // Hello, World!
+
+  // `String()` is invoked to coerce the expression to a string
+  let foo = { toString: () => 'World' };
+  console.log(`Hello, ${foo}!`);
+
+  // Invoking functions and methods inside interpolated expressions
+  // `word[0]` is the first character of the string
+  // `word.slice(1)` is the rest of the string, starting from the second character
+  function capitalize(word) {
+    return `${word[0].toUpperCase()}${word.slice(1)}`;
+  }
+  console.log(`${capitalize('hello')}, ${capitalize('world')}!`); // Hello, World!
+```
