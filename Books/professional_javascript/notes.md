@@ -251,6 +251,54 @@ Things to note:
 | \\      | Backslash (\)                                                                                            |
 | \'      | Single quote (')—used when the string is delineated by single quotes. Example: 'He said, \'hey.\''.      |
 | \"      | Double quote (")—used when the string is delineated by double quotes. Example: "He said, \"hey.\""       |
-| \`      | Backtick (\`)—used when the string is delineated by backticks. Example: \`He said, \`hey.\`\`.            |
+| \`      | Backtick (\`)—used when the string is delineated by backticks. Example: \`He said, \`hey.\`\`.           |
 | \xnn    | A character represented by hexadecimal code nn (where n is a hexadecimal digit 0-F). Example: \x41 = "A" |
 | \unnnn  | A Unicode character represented by the hexadecimal code nnnn (0-F). Example: \u03a3 = Greek Σ            |
+
+
+Character literals can be included anywhere in a string:
+```js
+  text = "This is the sigma letter: \u03A3";
+  console.log(text);         // This is the sigma letter: Σ
+  console.log(text.length);  // 27
+```
+- Use the `length` property to get the number of characters in a string.
+> Note: If a string contains double-byte characters, the length may not accurately reflect the number of characters in the string.
+
+##### String Conversions
+
+There are two ways to convert a value to a string:
+- Use the `toString()` method of the value.
+- Use the `String()` casting function to convert any value to a string.
+
+```js
+  // Method 1: using toString()
+  let age = 11;
+  let ageAsString = age.toString();    // "11"
+  let found = true;
+  let foundAsString = found.toString();  // "true" as a string
+
+  // For numbers, toString() can take a radix (base) as an argument
+  let num = 10;
+  console.log(num.toString());    // 10
+  console.log(num.toString(2));   // 1010 - binary
+  console.log(num.toString(8));   // 12 - octal
+  console.log(num.toString(10));  // 10 - decimal
+```
+
+```js
+  // Use the String() casting function to convert any value to a string
+  let value1 = 10;
+  let value2 = true;
+  let value3 = null;
+  let value4;
+
+  console.log(String(value1)); // "10"
+  console.log(String(value2)); // "true"
+  console.log(String(value3)); // "null"
+  console.log(String(value4)); // "undefined"
+```
+The `String()` function follows these rules:
+  - If the value has a `toString()` method, it calls that method and returns the result.
+  - If the value is `null`, it returns the string "null".
+  - If the value is `undefined`, it returns the string "undefined".
