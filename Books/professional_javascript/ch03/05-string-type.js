@@ -103,3 +103,58 @@ console.log("\nCode block 7");
   append(); // abcabc
   append(); // abcabcabc
 }
+
+console.log("\nCode block 8");
+// Tag functions
+{
+  let a = 6;
+  let b = 9;
+  function simpleTag(strings, aValExpression, bValExpression, sumExpression) {
+    console.log(strings);
+    console.log(aValExpression);
+    console.log(bValExpression);
+    console.log(sumExpression);
+    return 'foobar';
+  }
+  let untaggedResult = `${a} + ${b} = ${a + b}`;
+  let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
+
+  console.log(untaggedResult);     // 6 + 9 = 15
+  console.log(taggedResult);       // foobar
+}
+
+console.log("\nCode block 9");
+// Tag functions with spread operator
+{
+  let a = 6;
+  let b = 9;
+  function simpleTag(strings, ...expressions) {
+    console.log(strings);
+    for (const expression of expressions) {
+      console.log(expression);
+    }
+    return 'foobar';
+  }
+  let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
+  // (4) ['', ' + ', ' = ', '', raw: Array(4)]    // an empty string is used in the first and last positions because the template literal starts and ends with expressions
+  // 6
+  // 9
+  // 15
+  console.log(taggedResult);       // foobar
+}
+
+console.log("\nCode block 10");
+// Tag functions - combining string pieces and expression values
+{
+  let a = 6;
+  let b = 9;
+  function zipTag(strings, ...expressions) {
+    // In the map() function, `e` is the expression value and `i` is the index
+    return strings[0] + expressions.map((e, i) => `${e}${strings[i + 1]}`).join('');
+  }
+  let untaggedResult = `${a} + ${b} = ${a + b}`;
+  let taggedResult = zipTag`${a} + ${b} = ${a + b}`;
+
+  console.log(untaggedResult);     // 6 + 9 = 15
+  console.log(taggedResult);       // 6 + 9 = 15
+}

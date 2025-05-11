@@ -9,9 +9,8 @@
 
 </details>
 
-<details>
-<summary>Table of Contents</summary>
-
+<!-- omit in toc -->
+# Contents
 - [3. Language Basics](#3-language-basics)
   - [Data Types](#data-types)
     - [The `typeof` Operator](#the-typeof-operator)
@@ -19,15 +18,24 @@
     - [The `Null` Type](#the-null-type)
     - [The `Boolean` Type](#the-boolean-type)
     - [The `Number` Type](#the-number-type)
+      - [Number Conversions](#number-conversions)
     - [The `BigInt` Type](#the-bigint-type)
+      - [`BigInt` Conversions](#bigint-conversions)
+      - [`BigInt` Operators](#bigint-operators)
+      - [`BigInt` Static Methods](#bigint-static-methods)
+      - [Using `BigInt` with JSON](#using-bigint-with-json)
     - [The `String` Type](#the-string-type)
+      - [Character Literals](#character-literals)
+      - [String Conversions](#string-conversions)
+      - [Template Literals](#template-literals)
+      - [Interpolation](#interpolation)
+      - [Template Literal Tag Functions (Tag Functions)](#template-literal-tag-functions-tag-functions)
 
-</details>
 
 ## 3. Language Basics
 
 **Declaration Best Practices**
-- Don't use `var`
+- Don't use `var` - var can lead to unexpected behavior due to hoisting.
 - Prefer `const` over `let`
 
 ### Data Types
@@ -197,7 +205,7 @@ Things to note:
   console.log(16n | 8n);            // 24n - bitwise OR
   console.log(-8n + -8n);           // -16n - addition
   console.log(4n > 3);              // true - comparison
-  console.log([5n, 1, 3n].sort());  // [1, 3n, 5n] - sortinn
+  console.log([5n, 1, 3n].sort());  // [1, 3n, 5n] - sorting
 ```
 - Two operators are not supported with `BigInt`:
   - The zero-fill right shift operator `>>>`.
@@ -302,7 +310,7 @@ There are two ways to convert a value to a string:
 ```
 
 ```js
-  // Use the String() casting function to convert any value to a string
+  // Method 2: Use the String() casting function to convert any value to a string
   let value1 = 10;
   let value2 = true;
   let value3 = null;
@@ -383,4 +391,73 @@ Template literals can safely interpolate their previous value:
   append(); // abcabcabc
 ```
 
-##### Template Literal Tag Functions
+##### Template Literal Tag Functions (Tag Functions)
+
+*Tag functions* enable you to define custom interpolation behavior for template literals. Tag functions are useful in that they allow you to intercept the template literal and modify it before it is processed. This can be useful for:
+- Escaping or sanitizing user input
+- Localization
+- Custom formatting
+
+```js
+  let a = 6;
+  let b = 9;
+  function simpleTag(strings, aValExpression, bValExpression, sumExpression) {
+    console.log(strings);
+    console.log(aValExpression);
+    console.log(bValExpression);
+    console.log(sumExpression);
+    return 'foobar';
+  }
+  let untaggedResult = `${a} + ${b} = ${a + b}`;
+  let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;  // 
+
+  console.log(untaggedResult);     // 6 + 9 = 15
+  console.log(taggedResult);       // foobar
+```
+**Output:**  
+```bash
+(4) ['', ' + ', ' = ', '', raw: Array(4)]       # First argument is an array of strings, representing the static parts of the template literal
+6                                               # console.log(aValExpression) - the first evaluated expression, ${a}
+9                                               # console.log(bValExpression) - the second evaluated expression, ${b}
+15                                              # console.log(sumExpression) - the third evaluated expression, ${a + b}
+6 + 9 = 15                                      # console.log(untaggedResult)
+foobar                                          # console.log(taggedResult)
+```
+**Notes:**
+- The tag function receives the template literal and splits it into its pieces.
+- The first argument is an array of strings, representing the static parts of the template literal.
+- The remaining arguments are the results of the evaluated expressions.
+
+Because there are a variable number of expression arguments, using the spread operator (`...`) allows you to combine them into a single array:
+```js
+  let a = 6;
+  let b = 9;
+  function simpleTag(strings, ...expressions) {
+    console.log(strings);
+    for (const expression of expressions) {
+      console.log(expression);
+    }
+    return 'foobar';
+  }
+  let taggedResult = simpleTag`${a} + ${b} = ${a + b}`;
+  // (4) ['', ' + ', ' = ', '', raw: Array(4)]
+  // 6
+  // 9
+  // 15
+  console.log(taggedResult);       // foobar
+```
+
+You can work with the string array and the expression array to create custom behavior:
+```js
+  let a = 6;
+  let b = 9;
+  function zipTag(strings, ...expressions) {
+    // In the map() function, `e` is the expression value and `i` is the index
+    return strings[0] + expressions.map((e, i) => `${e}${strings[i + 1]}`).join('');
+  }
+  let untaggedResult = `${a} + ${b} = ${a + b}`;
+  let taggedResult = zipTag`${a} + ${b} = ${a + b}`;
+
+  console.log(untaggedResult);     // 6 + 9 = 15
+  console.log(taggedResult);       // 6 + 9 = 15
+```
