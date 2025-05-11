@@ -30,6 +30,7 @@
       - [Template Literals](#template-literals)
       - [Interpolation](#interpolation)
       - [Template Literal Tag Functions (Tag Functions)](#template-literal-tag-functions-tag-functions)
+      - [Raw Strings](#raw-strings)
 
 
 ## 3. Language Basics
@@ -460,4 +461,58 @@ You can work with the string array and the expression array to create custom beh
 
   console.log(untaggedResult);     // 6 + 9 = 15
   console.log(taggedResult);       // 6 + 9 = 15
+```
+
+##### Raw Strings
+
+The `String.raw` tag function enables you to get the raw template literal contents without being converted into actual character representations, such as new line or Unicode characters. This is useful when
+- working with raw source code, e.g. embedding regular expressions
+- writing Windows file paths, to avoid using double backslashes
+- avoiding accidental escapes, sometimes you want `\n` literally in the output , e.g. when generating config files, documentation, templates
+- handling multiline templates cleanly, i.e. when you want raw newlines and not processed ones
+
+```js
+  // Unicode demo
+  // \u00A9 is the copyright symbol ©
+  console.log('\u00A9');            // ©
+  console.log(String.raw`\u00A9`);  // \u00A9
+
+  // Newline demo
+  console.log(`first line\nsecond line`);
+  // first line
+  // second line
+  console.log(String.raw`first line\nsecond line`);   // "first line\nsecond line"
+
+  // This does not work for actual newline characters: they do not undergo conversion from their plaintext equivalents
+  console.log(`first line
+  second line`);
+  // first line
+  // second line
+  console.log(String.raw`first line
+  second line`);
+  // first line
+  // second lin
+```
+
+The raw values are availble as a property on each element in the string piece collection inside the tag function:
+
+```js
+  function printRaw(strings) {
+    console.log('Actual characters:');
+    for (const str of strings) {
+      console.log(str);
+    }
+    console.log('Escaped characters:');
+    for (const rawString of strings.raw) {
+      console.log(rawString);
+    }
+  }
+  printRaw`\u00A9${'and'}\n`;
+  //Actual characters:
+  // ©
+  // (newline)
+
+  // Escaped characters:
+  // \u00A9
+  // \n
 ```

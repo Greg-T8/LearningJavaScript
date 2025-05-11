@@ -158,3 +158,53 @@ console.log("\nCode block 10");
   console.log(untaggedResult);     // 6 + 9 = 15
   console.log(taggedResult);       // 6 + 9 = 15
 }
+
+console.log("\nCode block 11");
+// Raw strings
+{
+  // Unicode demo
+  // \u00A9 is the copyright symbol ©
+  console.log('\u00A9');            // ©
+  console.log(String.raw`\u00A9`);  // \u00A9
+
+  // Newline demo
+  console.log(`first line\nsecond line`);
+  // first line
+  // second line
+
+  console.log(String.raw`first line\nsecond line`);   // "first line\nsecond line"
+
+  // This does not work for actual newline characters: they do not undergo conversion from their plaintext equivalents
+  console.log(`first line
+  second line`);
+  // first line
+  // second line
+
+  console.log(String.raw`first line
+  second line`);
+  // first line
+  // second line
+}
+
+console.log("\nCode block 12");
+// Raw strings and tag functions
+{
+  function printRaw(strings) {
+    console.log('Actual characters:');
+    for (const str of strings) {
+      console.log(str);
+    }
+    console.log('Escaped characters:');
+    for (const rawString of strings.raw) {
+      console.log(rawString);
+    }
+  }
+  printRaw`\u00A9${'and'}\n`;
+  //Actual characters:
+  // ©
+  // (newline)
+
+  // Escaped characters:
+  // \u00A9
+  // \n
+}
