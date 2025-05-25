@@ -698,3 +698,18 @@ Use the following methods to return properties and symbols from an object:
   console.log(Reflect.ownKeys(o));
   // ['baz', 'qux', Symbol(foo), Symbol(bar)]
 ```
+
+If you don't maintain an explicit reference to the symbol, you must traverse all the object's symbol properties to recover the property key:
+
+```js
+  let o = {
+    [Symbol('foo')]: 'foo val',   // No explicit reference to the symbol
+    [Symbol('bar')]: 'bar val'
+  }
+
+  console.log(o);
+  // { [Symbol(foo)]: 'foo val', [Symbol(bar)]: 'bar val' }
+
+  let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) => symbol.toString().match(/bar/));
+  console.log(barSymbol);  // Symbol(bar)
+```

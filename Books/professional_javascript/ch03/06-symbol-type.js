@@ -149,3 +149,17 @@ console.log("\nCode block 14");
   console.log(Reflect.ownKeys(o));
   // ['baz', 'qux', Symbol(foo), Symbol(bar)]
 }
+
+console.log("\nCode block 15");
+{
+  let o = {
+    [Symbol('foo')]: 'foo val',
+    [Symbol('bar')]: 'bar val'
+  }
+
+  console.log(o);
+  // { [Symbol(foo)]: 'foo val', [Symbol(bar)]: 'bar val' }
+
+  let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) => symbol.toString().match(/bar/));
+  console.log(barSymbol);  // Symbol(bar)
+}
