@@ -31,6 +31,8 @@
       - [Interpolation](#interpolation)
       - [Template Literal Tag Functions (Tag Functions)](#template-literal-tag-functions-tag-functions)
       - [Raw Strings](#raw-strings)
+    - [The `Symbol` Type](#the-symbol-type)
+      - [Basic Symbol Use](#basic-symbol-use)
 
 
 ## 3. Language Basics
@@ -515,4 +517,41 @@ The raw values are availble as a property on each element in the string piece co
   // Escaped characters:
   // \u00A9
   // \n
+```
+
+#### The `Symbol` Type
+
+Symbols are primitive values, and symbol instances are unique and immutable. The purpose of a symbol is to be a guaranteed unique identifier for object properties that does not risk property collision.
+
+Symbols may seem similar to object private properties, but they are not the same. Symbols are intended to be used as unique tokens that can be used to key special properties with something other than a string.
+
+##### Basic Symbol Use
+
+Instantiating a symbol:
+
+```js
+  let sym = Symbol();
+  console.log(typeof sym);  // symbol
+```
+
+The symbols you define are unique, even if they have the same description:
+
+```js
+  let genericSymbol = Symbol();
+  let otherGenericSymbol = Symbol();
+  console.log(genericSymbol === otherGenericSymbol);  // false
+
+  let fooSymbol = Symbol('foo');
+  let otherFooSymbol = Symbol('foo');
+  console.log(fooSymbol === otherFooSymbol);  // false
+```
+
+You can use symbols as object property keys, without the risk of property collision:
+
+```js
+  let genericSymbol = Symbol();
+  console.log(genericSymbol);   // Symbol()
+
+  let fooSymbol = Symbol('foo');
+  console.log(fooSymbol);      // Symbol(foo)
 ```
