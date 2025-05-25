@@ -33,6 +33,7 @@
       - [Raw Strings](#raw-strings)
     - [The `Symbol` Type](#the-symbol-type)
       - [Basic Symbol Use](#basic-symbol-use)
+      - [Using the Global Symbol Registry](#using-the-global-symbol-registry)
 
 
 ## 3. Language Basics
@@ -554,4 +555,46 @@ You can use symbols as object property keys, without the risk of property collis
 
   let fooSymbol = Symbol('foo');
   console.log(fooSymbol);      // Symbol(foo)
+```
+
+The `Symbol()` function cannot be used with the `new` operator. THe purpose of this is to avoide symbol object wrappers, as is possible with Boolean, String, and Number, which support constructor behavior.
+
+```js
+  let myBoolean = new Boolean();
+  console.log(typeof myBoolean);  // object
+
+  let myString = new String();
+  console.log(typeof myString);   // object
+
+  let myNumber = new Number();
+  console.log(typeof myNumber);   // object
+
+  let mySymbol = new Symbol();    // TypeError: Symbol is not a constructor
+```
+
+You can use the `Object()` function to convert a symbol to an object:
+
+```js
+  let mySymbol = Symbol();
+  let myWrappedSymbol = Object(mySymbol);
+  console.log(typeof myWrappedSymbol);  // object
+```
+
+##### Using the Global Symbol Registry
+
+A global symbol registry allows you to create symbols that can be shared across different parts of the runtime. This is useful for creating symbols that need to be accessed by multiple modules or libraries without the risk of name collisions.
+
+```js
+  let fooGlobalSymbol = Symbol.for('foo');
+  console.log(typeof fooGlobalSymbol);  // symbol
+```
+
+The `Symbol.for()` method is an idempotent operation. The first time it is called with a given string, it will check the global runtime registry, find that no symbol exists, generate a new symbol instance, and add it to the registry.
+
+Additional invocations with the same string key will check the global runtime registry, find that a symbol does exist, and return that symbol instance:
+
+```js
+  let fooGlobalSymbol = Symbol.for('foo');  // creates new symbol
+  let otherFooGlobalSymbol = Symbol.for('foo'); // reuses existing symbol
+  console.log(fooGlobalSymbol === otherFooGlobalSymbol);  // true
 ```
