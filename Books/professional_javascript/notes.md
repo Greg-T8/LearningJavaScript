@@ -34,6 +34,7 @@
     - [The `Symbol` Type](#the-symbol-type)
       - [Basic Symbol Use](#basic-symbol-use)
       - [Using the Global Symbol Registry](#using-the-global-symbol-registry)
+      - [Using Symbols as Properties](#using-symbols-as-properties)
 
 
 ## 3. Language Basics
@@ -597,4 +598,103 @@ Additional invocations with the same string key will check the global runtime re
   let fooGlobalSymbol = Symbol.for('foo');  // creates new symbol
   let otherFooGlobalSymbol = Symbol.for('foo'); // reuses existing symbol
   console.log(fooGlobalSymbol === otherFooGlobalSymbol);  // true
+```
+
+Symbols defined in the global symbol registry are totally distinct from symbols created with the `Symbol()` function, even if they have the same description:
+
+```js
+  let localSymbol = Symbol('foo');
+  let globalSymbol = Symbol.for('foo');
+  console.log(localSymbol === globalSymbol);  // false
+```
+
+Anything you provide as an argument to `Symbol.for()` will be converted to a string, so you can use any value as a key:
+
+```js
+  let mySymbol = Symbol.for(12345);
+  console.log(mySymbol);  // Symbol(12345)
+```
+
+The key used for the registry is also used as the symbol description:
+
+```js
+  let emptyGlobalSymbol = Symbol.for();
+  console.log(emptyGlobalSymbol);  // Symbol(undefined)
+```
+
+You can check the global registry using `Symbol.keyFor()`. This method returns `undefined` if the symbol is not found in the global registry:
+
+```js
+  // Global symbol
+  let s = Symbol.for('foo');
+  console.log(Symbol.keyFor(s)); // foo
+
+  // Regular symbol
+  let s2 = Symbol('foo');
+  console.log(Symbol.keyFor(s2)); // undefine
+```
+
+Using `Symbol.keyFor()` with a non-symbol value will throw a `TypeError`:
+
+```js
+  Symbol.keyFor(123);  // TypeError: Symbol.keyFor requires that its argument be a symbol
+```
+
+##### Using Symbols as Properties
+
+You can use a symbol anywhere you would normally use a string or number property:
+
+```js
+  let s1 = Symbol('foo'),
+      s2 = Symbol('bar'),
+      s3 = Symbol('baz'),
+      s4 = Symbol('qux');
+
+  let o = {
+    [s1]: 'foo val'
+  };
+  // Also valid: o[s1] = 'foo val';
+  console.log(o);
+  // { [Symbol(foo)]: 'foo val' }
+
+  Object.defineProperty(o, s2, { value: 'bar val' });
+  console.log(o);
+  // { [Symbol(foo)]: 'foo val', [Symbol(bar)]: 'bar val' }
+
+  Object.defineProperties(o, {
+    [s3]: { value: 'baz val' },
+    [s4]: { value: 'qux val' }
+  });
+  console.log(o);
+  // { [Symbol(foo)]: 'foo val', [Symbol(bar)]: 'bar val', [Symbol(baz)]: 'baz val', [Symbol(qux)]: 'qux val' }
+```
+
+Use the following methods to return properties and symbols from an object:
+- `Object.getOwnPropertySymbols()`: Returns an array of all symbol properties of an object.
+- `Object.getOwnPropertyNames()`: Returns an array of all string properties of an object.
+- `Object.getOwnPropertyDescriptors()`: Returns an object containing both regular and symbol property descriptors.
+- `Reflect.ownKeys()`: Returns an array of all string and symbol keys of an object.
+
+```js
+  let s1 = Symbol('foo'),
+      s2 = Symbol('bar');
+
+  let o = {
+    [s1]: 'foo val',
+    [s2]: 'bar val',
+    baz: 'baz val',
+    qux: 'qux val'
+  }
+
+  console.log(Object.getOwnPropertySymbols(o));
+  // [ Symbol(foo), Symbol(bar) ]
+
+  console.log(Object.getOwnPropertyNames(o));
+  // [ 'baz', 'qux' ]
+
+  console.log(Object.getOwnPropertyDescriptors(o));
+  // {baz: {…}, qux: {…}, Symbol(foo): {…}, Symbol(bar): {…}}
+
+  console.log(Reflect.ownKeys(o));
+  // ['baz', 'qux', Symbol(foo), Symbol(bar)]
 ```
