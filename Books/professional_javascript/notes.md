@@ -761,3 +761,48 @@ The object produced by the `Symbol.asyncIterator` function should sequentially p
   asyncCount();
   // Output: 0, 1, 2, 3, 4
 ```
+
+###### Symbol.hasInstance
+
+This symbol is used as a property for a method that determines if a constructor object (1) recognizes an object as its instance and (2) is called by the semantics of the `instanceof` operator.
+
+The `instanceof` operator determines if an object instance has a prototype in its prototype chain.
+
+```js
+  function Foo(){}
+  let f = new Foo();
+  console.log(f instanceof Foo);  // true
+
+  class Bar{}
+  let b = new Bar();
+  console.log(b instanceof Bar);  // true
+```
+
+On the back end, the `instanceof` operator uses a `Symbol.hasInstance` function to evaluate this relationship. `Symbol.hasInstance` keys a function which performs the same behavior but with the operands reversed:
+
+```js
+  function Foo(){}
+  let f = new Foo();
+  console.log(Foo[Symbol.hasInstance](f));  // true
+
+	class Bar{}
+  let b = new Bar();
+  console.log(Bar[Symbol.hasInstance](b));  // true
+```
+
+Since the `Symbol.hasInstance` property is defined on the `Function` prototype, it is automatically avaialable by default to all function and class definitions. Because the `instanceof` operator will seek the property definition on the prototype chain, it is possible to redefine the `Symbol.hasInstance` function  on an inherited class as a static method:
+
+```js
+  class Bar {}
+  class Baz extends Bar {
+    static [Symbol.hasInstance]() {
+      return false;  // Override the default behavior
+    }
+  }
+
+  let b = new Baz();
+  console.log(Bar[Symbol.hasInstance](b)); // true
+  console.log(b instanceof Bar);  // true
+  console.log(Baz[Symbol.hasInstance](b)); // false
+  console.log(b instanceof Baz);  // false
+```
