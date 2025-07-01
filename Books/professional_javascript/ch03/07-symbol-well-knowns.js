@@ -52,3 +52,41 @@ console.log("\nCode block 2");
   asyncCount();
   // Output: 0, 1, 2, 3, 4
 }
+
+console.log("\nCode block 3");
+{
+  function Foo() { }
+  let f = new Foo();
+  console.log(f instanceof Foo);  // true
+
+  class Bar { }
+  let b = new Bar();
+  console.log(b instanceof Bar);  // true
+}
+
+console.log("\nCode block 4");
+{
+  function Foo(){}
+  let f = new Foo();
+  console.log(Foo[Symbol.hasInstance](f));  // true
+
+	class Bar{}
+  let b = new Bar();
+  console.log(Bar[Symbol.hasInstance](b));  // true
+}
+
+console.log("\nCode block 5");
+{
+  class Bar {}
+  class Baz extends Bar {
+    static [Symbol.hasInstance]() {
+      return false;  // Override the default behavior
+    }
+  }
+
+  let b = new Baz();
+  console.log(Bar[Symbol.hasInstance](b)); // true
+  console.log(b instanceof Bar);  // true
+  console.log(Baz[Symbol.hasInstance](b)); // false
+  console.log(b instanceof Baz);  // false
+}
