@@ -35,6 +35,7 @@
       - [Basic Symbol Use](#basic-symbol-use)
       - [Using the Global Symbol Registry](#using-the-global-symbol-registry)
       - [Using Symbols as Properties](#using-symbols-as-properties)
+      - [Well-Known Symbols](#well-known-symbols)
 
 
 ## 3. Language Basics
@@ -712,4 +713,51 @@ If you don't maintain an explicit reference to the symbol, you must traverse all
 
   let barSymbol = Object.getOwnPropertySymbols(o).find((symbol) => symbol.toString().match(/bar/));
   console.log(barSymbol);  // Symbol(bar)
+```
+
+##### Well-Known Symbols
+
+ECMAScript includes a collection of well-known symbols that are used to expose internal language behaviors for direct access, overriding, or emulating. These well-known symbols exist as string properties on the `Symbol` factory function.
+
+In discussions about ECMAScript specification, you'lll see these symbols referred to by their specification names, which are prefixed with @@, e.g. `@@iterator` refers to Symbol.iterator.
+
+###### Symbol.asyncInterator
+
+This symbol is used as a property for "a method that returns the default `AsyncIterator` for an object. Called by the semantics of the `for-await` statement." Language constructs like `for-await` make use of this function to perform asynchronous iteration. In many cases, it takes the form of an `AsyncGenerator` object that implements the iterator API.
+
+```js
+  class Foo {
+    async *[Symbol.asyncIterator](){}
+  }
+
+  let f = new Foo();
+
+  console.log(f[Symbol.asyncIterator]());
+  // AsyncGenerator {<suspended>}
+```
+
+The object produced by the `Symbol.asyncIterator` function should sequentially produce a `Promise` via its `next()` method.
+
+```js
+  class Emitter {
+    constructor(max) {
+      this.max = max;
+      this.asyncIdx = 0;
+    }
+
+    async *[Symbol.asyncIterator]() {     // Define the async generator function 
+      while (this.asyncIdx < this.max) {
+        yield new Promise((resolve) => resolve(this.asyncIdx++));
+      }
+    }
+  }
+
+  async function asyncCount() {     // Create an async function to consume the async iterator
+    let emitter = new Emitter(5);
+    for await (const x of emitter) {
+      console.log(x);
+    }
+  }
+  asyncCount();
+  // Output: 0, 1, 2, 3, 4
 ```
