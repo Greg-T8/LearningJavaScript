@@ -902,12 +902,11 @@ Providing something other than a regular expression will cause it to be converte
 
 ```js
   class FooMatcher {
-    static [Symbol.match](target) {
+    static [Symbol.match](target) {     // Overriding the match method by providing a static method instead of a regular expression
       return target.includes("foo");
     }
   }
 
-  // Overriding the match method by providing a static method instead of a regular expression
   console.log("foobar".match(FooMatcher)); // true
   console.log("barbaz".match(FooMatcher)); // false
 
@@ -916,13 +915,11 @@ Providing something other than a regular expression will cause it to be converte
     constructor(str) {
       this.str = str;
     }
-
-    [Symbol.match](target) {
+    [Symbol.match](target) {          // Overriding the match method by providing a method on the instance instead of a regular expression
       return target.includes(this.str);
     }
   }
 
-  // Overriding the match method by providing an instance of a class
   console.log('foobar'.match(new StringMatcher('foo')));  // true
   console.log('barbaz'.match(new StringMatcher('foo')));  // false
 ```
