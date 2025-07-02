@@ -112,5 +112,41 @@ console.log("\nCode block 6");
   console.log(initial.concat(otherObject));                 // ['foo', Set(1)]
   otherObject[Symbol.isConcatSpreadable] = true;            // Set the symbol to true
   console.log(initial.concat(otherObject));                 // ['foo', 'qux']
+}
 
+console.log("\nCode block 7");
+{
+  class Foo {
+    *[Symbol.iterator]() {}     // Generator function
+  }
+  let f = new Foo();
+  console.log(f[Symbol.iterator]());
+  // Generator {[[GeneratorState]]: 'suspended'}
+}
+
+console.log("\nCode block 8");
+{
+  class Emitter {
+    constructor(max) {
+      this.max = max;
+      this.idx = 0;
+    }
+
+    *[Symbol.iterator]() {                // Define the generator function
+      while (this.idx < this.max) {
+        yield this.idx++;
+      }
+    }
+  }
+
+  function count() {
+    let emitter = new Emitter(5);
+
+    for (const x of emitter) {            // Use the generator in an iteratable language construct
+      console.log(x);
+    }
+  }
+
+  count();
+  // Output: 0, 1, 2, 3, 4
 }
