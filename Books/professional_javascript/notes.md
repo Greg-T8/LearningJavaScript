@@ -881,3 +881,48 @@ The object produced by the `Symbol.iterator` function should sequentially produc
   count();
   // Output: 0, 1, 2, 3, 4
 ```
+
+###### Symbol.match
+
+This symbol is used as a property for a regular expression method that matches against a string. It is called by the `String.prototype.match()` method.
+
+The `String.prototype.match()` method uses the function keyed in `Symbol.match` to evaluate the expression.
+
+The regular expression prototype has the `Symbol.match` method defined by default, so all regular expression instances are valid parameters to the `String` method by default:
+
+```js
+  console.log(RegExp.prototype[Symbol.match]);  // Showing that the regular expression prototype has a match method
+  // Output: ƒ [Symbol.match]()
+
+  console.log('foobar'.match(/bar/));           // Using a regular expression as a parameter to `String.prototype.match()` yields `Symbol.match`
+  // Output: ['bar', index: 3, input: 'foobar', groups: undefined]
+```
+
+Providing something other than a regular expression will cause it to be converted to a `RegExp` object. If you wish to circumvent this behavior, and pass something other than a regular expression instance, you can define your own `Symbol.match` function:
+
+```js
+  class FooMatcher {
+    static [Symbol.match](target) {
+      return target.includes("foo");
+    }
+  }
+
+  // Overriding the match method by providing a static method instead of a regular expression
+  console.log("foobar".match(FooMatcher)); // true
+  console.log("barbaz".match(FooMatcher)); // false
+
+
+  class StringMatcher {
+    constructor(str) {
+      this.str = str;
+    }
+
+    [Symbol.match](target) {
+      return target.includes(this.str);
+    }
+  }
+
+  // Overriding the match method by providing an instance of a class
+  console.log('foobar'.match(new StringMatcher('foo')));  // true
+  console.log('barbaz'.match(new StringMatcher('foo')));  // false
+```
