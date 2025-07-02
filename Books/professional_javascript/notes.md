@@ -806,3 +806,36 @@ Since the `Symbol.hasInstance` property is defined on the `Function` prototype, 
   console.log(Baz[Symbol.hasInstance](b)); // false
   console.log(b instanceof Baz);  // false
 ```
+
+###### Symbol.isConcatSpreadable
+
+This symbol is used as a Boolean-valued property that, if true, indicates an object should be flattened to its elements by `Array.prototype.concat()`.
+
+The `Array.prototype.concat()` method will select how to join an array-like object to the array instance based on the type of object passed. The value of `Symbol.isConcatSpreadable` allows you to override this behavior.
+
+Expected default behavior:
+- Array objects: will be flattened into the existing array; a value of `false` or falsy value will append the entire object to the array.
+- Array-like objects: will be appended to the array; a value of `true` or truthy value will flatten the array-like object into the array.
+- Other objects (not array-like): will be ignored when `Symbol.isConcatSpreadable` is set to `true`
+
+```js
+  let initial = ['foo'];
+
+  let array = ['bar'];
+  console.log(array[Symbol.isConcatSpreadable]);            // undefined
+  console.log(initial.concat(array));                       // ['foo', 'bar']
+  array[Symbol.isConcatSpreadable] = false;                 // Set the symbol to false
+  console.log(initial.concat(array));                       // ['foo', Array(1)]
+
+  let arrayLikeObject = { length: 1, 0: 'baz' };
+  console.log(arrayLikeObject[Symbol.isConcatSpreadable]);  // undefined
+  console.log(initial.concat(arrayLikeObject));             // ['foo', {...}]
+  arrayLikeObject[Symbol.isConcatSpreadable] = true;        // Set the symbol to true
+  console.log(initial.concat(arrayLikeObject));             // ['foo', 'baz']
+
+  let otherObject = new Set().add('qux');
+  console.log(otherObject[Symbol.isConcatSpreadable]);      // undefined
+  console.log(initial.concat(otherObject));                 // ['foo', Set(1)]
+  otherObject[Symbol.isConcatSpreadable] = true;            // Set the symbol to true
+  console.log(initial.concat(otherObject));                 // ['foo', 'qux']
+```
