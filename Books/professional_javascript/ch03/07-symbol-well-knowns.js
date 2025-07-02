@@ -36,14 +36,16 @@ console.log("\nCode block 2");
       this.asyncIdx = 0;
     }
 
-    async *[Symbol.asyncIterator]() {     // Define the async generator function
+    async *[Symbol.asyncIterator]() {
+      // Define the async generator function
       while (this.asyncIdx < this.max) {
         yield new Promise((resolve) => resolve(this.asyncIdx++));
       }
     }
   }
 
-  async function asyncCount() {     // Create an async function to consume the async iterator
+  async function asyncCount() {
+    // Create an async function to consume the async iterator
     let emitter = new Emitter(5);
     for await (const x of emitter) {
       console.log(x);
@@ -55,24 +57,24 @@ console.log("\nCode block 2");
 
 console.log("\nCode block 3");
 {
-  function Foo() { }
+  function Foo() {}
   let f = new Foo();
-  console.log(f instanceof Foo);  // true
+  console.log(f instanceof Foo); // true
 
-  class Bar { }
+  class Bar {}
   let b = new Bar();
-  console.log(b instanceof Bar);  // true
+  console.log(b instanceof Bar); // true
 }
 
 console.log("\nCode block 4");
 {
-  function Foo(){}
+  function Foo() {}
   let f = new Foo();
-  console.log(Foo[Symbol.hasInstance](f));  // true
+  console.log(Foo[Symbol.hasInstance](f)); // true
 
-	class Bar{}
+  class Bar {}
   let b = new Bar();
-  console.log(Bar[Symbol.hasInstance](b));  // true
+  console.log(Bar[Symbol.hasInstance](b)); // true
 }
 
 console.log("\nCode block 5");
@@ -80,44 +82,44 @@ console.log("\nCode block 5");
   class Bar {}
   class Baz extends Bar {
     static [Symbol.hasInstance]() {
-      return false;  // Override the default behavior
+      return false; // Override the default behavior
     }
   }
 
   let b = new Baz();
   console.log(Bar[Symbol.hasInstance](b)); // true
-  console.log(b instanceof Bar);  // true
+  console.log(b instanceof Bar); // true
   console.log(Baz[Symbol.hasInstance](b)); // false
-  console.log(b instanceof Baz);  // false
+  console.log(b instanceof Baz); // false
 }
 
 console.log("\nCode block 6");
 {
-  let initial = ['foo'];
+  let initial = ["foo"];
 
-  let array = ['bar'];
-  console.log(array[Symbol.isConcatSpreadable]);  // undefined
-  console.log(initial.concat(array));             // ['foo', 'bar']
-  array[Symbol.isConcatSpreadable] = false;       // Set the symbol to false
-  console.log(initial.concat(array));             // ['foo', Array(1)]
+  let array = ["bar"];
+  console.log(array[Symbol.isConcatSpreadable]); // undefined
+  console.log(initial.concat(array)); // ['foo', 'bar']
+  array[Symbol.isConcatSpreadable] = false; // Set the symbol to false
+  console.log(initial.concat(array)); // ['foo', Array(1)]
 
-  let arrayLikeObject = { length: 1, 0: 'baz' };
-  console.log(arrayLikeObject[Symbol.isConcatSpreadable]);  // undefined
-  console.log(initial.concat(arrayLikeObject));             // ['foo', {...}]
-  arrayLikeObject[Symbol.isConcatSpreadable] = true;        // Set the symbol to true
-  console.log(initial.concat(arrayLikeObject));             // ['foo', 'baz']
+  let arrayLikeObject = { length: 1, 0: "baz" };
+  console.log(arrayLikeObject[Symbol.isConcatSpreadable]); // undefined
+  console.log(initial.concat(arrayLikeObject)); // ['foo', {...}]
+  arrayLikeObject[Symbol.isConcatSpreadable] = true; // Set the symbol to true
+  console.log(initial.concat(arrayLikeObject)); // ['foo', 'baz']
 
-  let otherObject = new Set().add('qux');
-  console.log(otherObject[Symbol.isConcatSpreadable]);      // undefined
-  console.log(initial.concat(otherObject));                 // ['foo', Set(1)]
-  otherObject[Symbol.isConcatSpreadable] = true;            // Set the symbol to true
-  console.log(initial.concat(otherObject));                 // ['foo', 'qux']
+  let otherObject = new Set().add("qux");
+  console.log(otherObject[Symbol.isConcatSpreadable]); // undefined
+  console.log(initial.concat(otherObject)); // ['foo', Set(1)]
+  otherObject[Symbol.isConcatSpreadable] = true; // Set the symbol to true
+  console.log(initial.concat(otherObject)); // ['foo', 'qux']
 }
 
 console.log("\nCode block 7");
 {
   class Foo {
-    *[Symbol.iterator]() {}     // Generator function
+    *[Symbol.iterator]() {} // Generator function
   }
   let f = new Foo();
   console.log(f[Symbol.iterator]());
@@ -132,7 +134,8 @@ console.log("\nCode block 8");
       this.idx = 0;
     }
 
-    *[Symbol.iterator]() {                // Define the generator function
+    *[Symbol.iterator]() {
+      // Define the generator function
       while (this.idx < this.max) {
         yield this.idx++;
       }
@@ -142,11 +145,49 @@ console.log("\nCode block 8");
   function count() {
     let emitter = new Emitter(5);
 
-    for (const x of emitter) {            // Use the generator in an iteratable language construct
+    for (const x of emitter) {
+      // Use the generator in an iteratable language construct
       console.log(x);
     }
   }
 
   count();
   // Output: 0, 1, 2, 3, 4
+}
+
+console.log("\nCode block 9");
+{
+  console.log(RegExp.prototype[Symbol.match]); // Showing that the regular expression prototype has a match method
+  // Output: ƒ [Symbol.match]()
+
+  console.log("foobar".match(/bar/)); // Using the match method on a string
+  // Output: ['bar', index: 3, input: 'foobar', groups: undefined]
+}
+
+console.log("\nCode block 10");
+{
+  class FooMatcher {
+    static [Symbol.match](target) {
+      return target.includes("foo");
+    }
+  }
+
+  // Overriding the match method by providing a static method instead of a regular expression
+  console.log("foobar".match(FooMatcher)); // true
+  console.log("barbaz".match(FooMatcher)); // false
+
+
+  class StringMatcher {
+    constructor(str) {
+      this.str = str;
+    }
+
+    [Symbol.match](target) {
+      return target.includes(this.str);
+    }
+  }
+
+  // Overriding the match method by providing an instance of a class
+  console.log('foobar'.match(new StringMatcher('foo')));  // true
+  console.log('barbaz'.match(new StringMatcher('foo'))); // false
 }
