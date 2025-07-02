@@ -923,3 +923,41 @@ Providing something other than a regular expression will cause it to be converte
   console.log('foobar'.match(new StringMatcher('foo')));  // true
   console.log('barbaz'.match(new StringMatcher('foo')));  // false
 ```
+
+###### Symbol.replace
+
+This symble is used as a property for a regular expression method that replaces matched substrings of a string. It is called by the `String.prototype.replace()` method.
+
+```js
+  console.log(RegExp.prototype[Symbol.replace]);  // Showing that the regular expression prototype has a replace method
+  // Output: ƒ [Symbol.replace]()
+
+  console.log('foobarbaz'.replace(/bar/, 'qux'));   // Using a regular expression to replace a substring
+  // Output: 'fooquxbaz'
+```
+
+Similarly with `Symbol.match`, you can override this behavior to provide something other than a regular expression:
+
+```js
+  class FooReplacer {
+    static [Symbol.replace](target, replacement) {            // Overriding the replace method
+      return target.split('foo').join(replacement);
+    }
+  }
+
+  console.log('barfoobaz'.replace(FooReplacer, 'qux'));
+  // Output: 'barquxbaz'
+  
+
+  class StringReplacer {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.replace](target, replacement) {
+      return target.split(this.str).join(replacement);
+    }
+  }
+
+  console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
+  // Output: 'barquxbaz'
+```

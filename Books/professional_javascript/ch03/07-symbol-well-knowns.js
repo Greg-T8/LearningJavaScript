@@ -191,3 +191,37 @@ console.log("\nCode block 10");
   console.log('foobar'.match(new StringMatcher('foo')));  // true
   console.log('barbaz'.match(new StringMatcher('foo'))); // false
 }
+
+console.log("\nCode block 11");
+{
+  console.log(RegExp.prototype[Symbol.replace]);  // Showing that the regular expression prototype has a replace method
+  // Output: ƒ [Symbol.replace]()
+
+  console.log('foobarbaz'.replace(/bar/, 'qux'));   // Using a regular expression to replace a substring
+  // Output: 'fooquxbaz'
+}
+
+console.log("\nCode block 12");
+{
+  class FooReplacer {
+    static [Symbol.replace](target, replacement) {
+      return target.split('foo').join(replacement);
+    }
+  }
+
+  console.log('barfoobaz'.replace(FooReplacer, 'qux'));
+  // Output: 'barquxbaz'
+
+
+  class StringReplacer {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.replace](target, replacement) {
+      return target.split(this.str).join(replacement);
+    }
+  }
+
+  console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
+  // Output: 'barquxbaz'
+}
