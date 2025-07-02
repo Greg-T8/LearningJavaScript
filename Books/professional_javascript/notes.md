@@ -839,3 +839,45 @@ Expected default behavior:
   otherObject[Symbol.isConcatSpreadable] = true;            // Set the symbol to true
   console.log(initial.concat(otherObject));                 // ['foo', 'qux']
 ```
+
+###### Symbol.iterator
+
+This symbol is used as a property for a method that returns the default iterator for an object. This property is used by the `for...of` statement, and other language constructs which iterate over iterable objects like arrays, strings, and other collections.
+
+These language constructs invoke the function keyed by `Symbol.iterator` and expect it to return an object which implements the iterator API. In many cases, this takes the form of a generator function:
+
+```js
+  class Foo {
+    *[Symbol.iterator]() {}     // Generator function
+  }
+
+  let f = new Foo();
+  console.log(f[Symbol.iterator]());
+  // Generator {[[GeneratorState]]: 'suspended'
+```
+The object produced by the `Symbol.iterator` function should sequentially produce a value via its `next()` method, which is called by the language constructs that iterate over the object.
+
+```js
+  class Emitter {
+    constructor(max) {
+      this.max = max;
+      this.idx = 0;
+    }
+
+    *[Symbol.iterator]() {                // Define the generator function
+      while (this.idx < this.max) {
+        yield this.idx++;
+      }
+    }
+  }
+
+  function count() {
+    let emitter = new Emitter(5);
+    for (const x of emitter) {            // Use the generator in an iteratable language construct
+      console.log(x);
+    }
+  }
+
+  count();
+  // Output: 0, 1, 2, 3, 4
+```
