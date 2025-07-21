@@ -176,7 +176,6 @@ console.log("\nCode block 10");
   console.log("foobar".match(FooMatcher)); // true
   console.log("barbaz".match(FooMatcher)); // false
 
-
   class StringMatcher {
     constructor(str) {
       this.str = str;
@@ -188,16 +187,16 @@ console.log("\nCode block 10");
   }
 
   // Overriding the match method by providing an instance of a class
-  console.log('foobar'.match(new StringMatcher('foo')));  // true
-  console.log('barbaz'.match(new StringMatcher('foo'))); // false
+  console.log("foobar".match(new StringMatcher("foo"))); // true
+  console.log("barbaz".match(new StringMatcher("foo"))); // false
 }
 
 console.log("\nCode block 11");
 {
-  console.log(RegExp.prototype[Symbol.replace]);  // Showing that the regular expression prototype has a replace method
+  console.log(RegExp.prototype[Symbol.replace]); // Showing that the regular expression prototype has a replace method
   // Output: ƒ [Symbol.replace]()
 
-  console.log('foobarbaz'.replace(/bar/, 'qux'));   // Using a regular expression to replace a substring
+  console.log("foobarbaz".replace(/bar/, "qux")); // Using a regular expression to replace a substring
   // Output: 'fooquxbaz'
 }
 
@@ -205,13 +204,12 @@ console.log("\nCode block 12");
 {
   class FooReplacer {
     static [Symbol.replace](target, replacement) {
-      return target.split('foo').join(replacement);
+      return target.split("foo").join(replacement);
     }
   }
 
-  console.log('barfoobaz'.replace(FooReplacer, 'qux'));
+  console.log("barfoobaz".replace(FooReplacer, "qux"));
   // Output: 'barquxbaz'
-
 
   class StringReplacer {
     constructor(str) {
@@ -222,7 +220,7 @@ console.log("\nCode block 12");
     }
   }
 
-  console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
+  console.log("barfoobaz".replace(new StringReplacer("foo"), "qux"));
   // Output: 'barquxbaz'
 }
 
@@ -231,7 +229,7 @@ console.log("\nCode block 13");
   console.log(RegExp.prototype[Symbol.search]); // Showing that the regular expression prototype has a search method
   // Output:  ƒ [Symbol.search]()
 
-  console.log('foobar'.search(/bar/));
+  console.log("foobar".search(/bar/));
   // Output: 3 (the index of the first match)
 }
 
@@ -239,14 +237,13 @@ console.log("\nCode block 14");
 {
   class FooSearcher {
     static [Symbol.search](target) {
-      return target.indexOf('foo');
+      return target.indexOf("foo");
     }
   }
 
-  console.log('foobar'.search(FooSearcher)); // Output: 0
-  console.log('barfoo'.search(FooSearcher)); // Output: 3
-  console.log('barbaz'.search(FooSearcher)); // Output: -1 (not found)
-
+  console.log("foobar".search(FooSearcher)); // Output: 0
+  console.log("barfoo".search(FooSearcher)); // Output: 3
+  console.log("barbaz".search(FooSearcher)); // Output: -1 (not found)
 
   class StringSearcher {
     constructor(str) {
@@ -257,8 +254,95 @@ console.log("\nCode block 14");
     }
   }
 
-  console.log('foobar'.search(new StringSearcher('foo'))); // Output: 0
-  console.log('barfoo'.search(new StringSearcher('foo'))); // Output: 3
-  console.log('barbaz'.search(new StringSearcher('qux'))); // Output: -1 (not found)
+  console.log("foobar".search(new StringSearcher("foo"))); // Output: 0
+  console.log("barfoo".search(new StringSearcher("foo"))); // Output: 3
+  console.log("barbaz".search(new StringSearcher("qux"))); // Output: -1 (not found)
+}
 
+console.log("\nCode block 15");
+{
+  class Bar extends Array {}
+  class Baz extends Array {
+    static get [Symbol.species]() {
+      return Array;
+    }
+  }
+
+  let bar = new Bar();
+  console.log(bar instanceof Array); // true
+  console.log(bar instanceof Bar); // true
+  bar = bar.concat("bar");
+  console.log(bar instanceof Array); // true
+  console.log(bar instanceof Bar); // true
+
+  let baz = new Baz();
+  console.log(baz instanceof Array); // true
+  console.log(baz instanceof Baz); // true
+  baz = baz.concat("baz");
+  console.log(baz instanceof Array); // true
+  console.log(baz instanceof Baz); // false
+}
+
+console.log("\nCode block 16");
+{
+  console.log(RegExp.prototype[Symbol.split]);
+  // ƒ [Symbol.split]()
+
+  console.log("foobarbaz".split(/bar/));
+  // Output: ['foo', 'baz']
+}
+
+console.log("\nCode block 17");
+{
+  class FooSplitter {
+    static [Symbol.split](target) {
+      return target.split("foo");
+    }
+  }
+
+  console.log("barfoobaz".split(FooSplitter));
+  // Output: ['bar', 'baz']
+
+
+  class StringSplitter {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.split](target) {
+      return target.split(this.str);
+    }
+  }
+
+  console.log("barfoobaz".split(new StringSplitter("foo")));
+  // Output: ['bar', 'baz']
+}
+
+console.log("\nCode block 18");
+{
+  class Foo {}
+  let foo = new Foo();
+
+  console.log(3 + foo);       // '3[object Object]' -- JavaScript coerces to a string
+  console.log(3 - foo);       // NaN -- JavaScript coerces to a number
+  console.log(String(foo));   // '[object Object]'
+
+
+  class Bar {
+    constructor() {
+      this[Symbol.toPrimitive] = function (hint) {
+        switch (hint) {
+          case 'number':
+            return 3;
+          case 'string':
+            return 'string bar';
+          case 'default':
+            return 'default bar';
+        }
+      }
+    }
+  }
+
+  let bar = new Bar();
+  console.log(3 + bar);       // '3default bar' -- JavaScript coerces to a string
+  console.log(3 - bar);       // 0: JavaScript coerces to a number
 }

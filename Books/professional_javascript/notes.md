@@ -1001,3 +1001,84 @@ Providing something other than a regular expression will cause it to be converte
   console.log('barfoo'.search(new StringSearcher('foo'))); // Output: 3
   console.log('barbaz'.search(new StringSearcher('qux'))); // Output: -1 (not found)
 ```
+
+###### Symbol.species
+
+This symbol represents a property that holds the constructor function used to create derived objects. It lets you control which constructor is used when an object is cloned or when a new object is created from an existing one.
+
+```js
+  class Bar extends Array {}
+  class Baz extends Array {
+    static get [Symbol.species]() {   // Symbol.species is a static getter that returns the constructor to be used for derived objects
+      return Array;
+    }
+  }
+
+
+  let bar = new Bar();
+  console.log(bar instanceof Array);  // true
+  console.log(bar instanceof Bar);    // true
+  bar = bar.concat('bar');            // Bar extends Array, so concat returns a Bar instance
+  console.log(bar instanceof Array);  // true
+  console.log(bar instanceof Bar);    // true
+
+  let baz = new Baz();
+  console.log(baz instanceof Array);  // true
+  console.log(baz instanceof Baz);    // true
+  baz = baz.concat('baz');            // Baz extends Array, but species is overridden to return Array, so concat returns an Array instance
+  console.log(baz instanceof Array);  // true
+  console.log(baz instanceof Baz);    // false
+```
+
+###### Symbol.split
+
+This symbol is a property of a regular expression method used to split a string at matching indices. It is invoked by the `String.prototype.split()` method.
+
+```js
+  console.log(RegExp.prototype[Symbol.split]);
+  // ƒ [Symbol.split]()
+
+  console.log('foobarbaz'.split(/bar/));
+  // Output: ['foo', 'baz']
+```
+
+Providing something other than a regular expression will cause it to be converted to a `RegExp` object. You can circumvent this behavior by defining your own `Symbol.split` function:
+
+```js
+  class FooSplitter {
+    static [Symbol.split](target) {
+      return target.split("foo");
+    }
+  }
+
+  console.log("barfoobaz".split(FooSplitter));
+  // Output: ['bar', 'baz']
+
+
+  class StringSplitter {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.split](target) {
+      return target.split(this.str);
+    }
+  }
+
+  console.log("barfoobaz".split(new StringSplitter("foo")));
+  // Output: ['bar', 'baz']
+```
+
+###### Symbol.toPrimitive
+
+This symbol is used as a property for a method that converts an object to a corresponding primitive value and is called by the `ToPrimitive` abstract operation.
+
+There are a number of built-in operations which will attempt to coerce an object into a primitive value: a string, a number, or an unspecified primitive type. 
+
+For a custom object instance, you can divert his behavior by defining a function on the instance's `Symbol.toPrimitive` property.
+
+```js
+
+
+```
+
+**Note:** In JavaScript, the `+` operator is the only binary operator that can mean either arithmetic addition or string concatenation. 
