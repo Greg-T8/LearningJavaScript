@@ -225,3 +225,40 @@ console.log("\nCode block 12");
   console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
   // Output: 'barquxbaz'
 }
+
+console.log("\nCode block 13");
+{
+  console.log(RegExp.prototype[Symbol.search]); // Showing that the regular expression prototype has a search method
+  // Output:  ƒ [Symbol.search]()
+
+  console.log('foobar'.search(/bar/));
+  // Output: 3 (the index of the first match)
+}
+
+console.log("\nCode block 14");
+{
+  class FooSearcher {
+    static [Symbol.search](target) {
+      return target.indexOf('foo');
+    }
+  }
+
+  console.log('foobar'.search(FooSearcher)); // Output: 0
+  console.log('barfoo'.search(FooSearcher)); // Output: 3
+  console.log('barbaz'.search(FooSearcher)); // Output: -1 (not found)
+
+
+  class StringSearcher {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.search](target) {
+      return target.indexOf(this.str);
+    }
+  }
+
+  console.log('foobar'.search(new StringSearcher('foo'))); // Output: 0
+  console.log('barfoo'.search(new StringSearcher('foo'))); // Output: 3
+  console.log('barbaz'.search(new StringSearcher('qux'))); // Output: -1 (not found)
+
+}

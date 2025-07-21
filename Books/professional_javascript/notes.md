@@ -926,7 +926,7 @@ Providing something other than a regular expression will cause it to be converte
 
 ###### Symbol.replace
 
-This symble is used as a property for a regular expression method that replaces matched substrings of a string. It is called by the `String.prototype.replace()` method.
+This symbol is used as a property for a regular expression method that replaces matched substrings of a string. It is called by the `String.prototype.replace()` method. The first argument to `String.prototype.replace()` can be a string or an object with a `Symbol.replace` method.
 
 ```js
   console.log(RegExp.prototype[Symbol.replace]);  // Showing that the regular expression prototype has a replace method
@@ -960,4 +960,44 @@ Similarly with `Symbol.match`, you can override this behavior to provide somethi
 
   console.log('barfoobaz'.replace(new StringReplacer('foo'), 'qux'));
   // Output: 'barquxbaz'
+```
+
+###### Symbol.search
+
+This symbol is used as a property for a regular expression method that returns the index with a string that matches the regular expression. It is called by the `String.prototype.search()` method.
+
+```js
+  console.log(RegExp.prototype[Symbol.search]); // Showing that the regular expression prototype has a search method
+  // Output:  ƒ [Symbol.search]()
+
+  console.log('foobar'.search(/bar/));
+  // Output: 3 (the index of the first match)
+```
+
+Providing something other than a regular expression will cause it to be converted to a `RegExp` object. You can circumvent this behavior by defining your own `Symbol.search` function:
+
+```js
+  class FooSearcher {
+    static [Symbol.search](target) {
+      return target.indexOf('foo');
+    }
+  }
+
+  console.log('foobar'.search(FooSearcher)); // Output: 0
+  console.log('barfoo'.search(FooSearcher)); // Output: 3
+  console.log('barbaz'.search(FooSearcher)); // Output: -1 (not found)
+
+  
+  class StringSearcher {
+    constructor(str) {
+      this.str = str;
+    }
+    [Symbol.search](target) {
+      return target.indexOf(this.str);
+    }
+  }
+
+  console.log('foobar'.search(new StringSearcher('foo'))); // Output: 0
+  console.log('barfoo'.search(new StringSearcher('foo'))); // Output: 3
+  console.log('barbaz'.search(new StringSearcher('qux'))); // Output: -1 (not found)
 ```
