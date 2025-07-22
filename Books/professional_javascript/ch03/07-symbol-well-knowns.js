@@ -347,3 +347,30 @@ console.log("\nCode block 18");
   console.log(3 - bar);       // 0:                 Sees `-` operator, so JavaScript coerces bar to a number
   console.log(String(bar));   // 'string bar'       Sees `String()` function, so JavaScript coerces bar to a string
 }
+
+console.log("\nCode block 19");
+{
+  let s = new Set();
+
+  console.log(s);                       // Set(0) {size: 0}
+  console.log(s.toString());            // [object Set]
+  console.log(s[Symbol.toStringTag]);   // 'Set'
+
+  class Foo {}
+  let foo = new Foo();
+
+  console.log(foo);                     // Foo
+  console.log(foo.toString());          // [object Object]
+  console.log(foo[Symbol.toStringTag]); // undefined
+
+  class Bar {
+    constructor() {
+      this[Symbol.toStringTag] = 'Bar';
+    }
+  }
+  let bar = new Bar();
+
+  console.log(bar);                     // Bar {Symbol(Symbol.toStringTag): 'Bar'}
+  console.log(bar.toString());          // [object Bar]
+  console.log(bar[Symbol.toStringTag]); // Bar
+}

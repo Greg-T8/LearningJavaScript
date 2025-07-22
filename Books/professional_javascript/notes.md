@@ -1108,4 +1108,34 @@ For a custom object instance, you can divert his behavior by defining a function
 
 **Note:** In JavaScript, the `+` operator is the only binary operator that can mean either arithmetic addition or string concatenation. 
 
-###### Symbol.
+###### Symbol.toStringTag
+
+This symbol represents a string-valued property used to define an object's default string description, accessed via `Object.prototype.toString()`.
+
+The `toString()` method uses `Symbol.toStringTag` to identify an object, defaulting to "Object" if not set. Built-in types have this defined, but custom classes must set it manually:
+
+```js
+  let s = new Set();
+
+  console.log(s);                       // Set(0) {size: 0}
+  console.log(s.toString());            // [object Set]
+  console.log(s[Symbol.toStringTag]);   // 'Set'
+
+  class Foo {}
+  let foo = new Foo();
+
+  console.log(foo);                     // Foo
+  console.log(foo.toString());          // [object Object]
+  console.log(foo[Symbol.toStringTag]); // undefined
+
+  class Bar {
+    constructor() {
+      this[Symbol.toStringTag] = 'Bar';
+    }
+  }
+  let bar = new Bar();
+
+  console.log(bar);                     // Bar {Symbol(Symbol.toStringTag): 'Bar'}
+  console.log(bar.toString());          // [object Bar]
+  console.log(bar[Symbol.toStringTag]); // Ba
+```
