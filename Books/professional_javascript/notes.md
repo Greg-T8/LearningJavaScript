@@ -36,6 +36,7 @@
       - [Using the Global Symbol Registry](#using-the-global-symbol-registry)
       - [Using Symbols as Properties](#using-symbols-as-properties)
       - [Well-Known Symbols](#well-known-symbols)
+    - [The `Object` Type](#the-object-type)
 
 
 ## 3. Language Basics
@@ -1137,5 +1138,31 @@ The `toString()` method uses `Symbol.toStringTag` to identify an object, default
 
   console.log(bar);                     // Bar {Symbol(Symbol.toStringTag): 'Bar'}
   console.log(bar.toString());          // [object Bar]
-  console.log(bar[Symbol.toStringTag]); // Ba
+  console.log(bar[Symbol.toStringTag]); // Bar
 ```
+
+###### Symbol.unscopables
+
+According to the ECMAScript specification, this symbol defines an object-valued property whose keys are excluded from `with` environment bindings. Assigning it an object with specific properties set to `true` prevents those properties from being included in a `with` statement.
+
+```js
+  let o = { foo: 'bar' };
+
+  with (o) {
+    console.log(foo);   // bar
+  }
+
+  o[Symbol.unscopables] = {
+    foo: true           // Setting to `true` prevents `foo` from being included in the `with` statement
+  };
+
+  with (o) {
+    console.log(foo);   // ReferenceError
+  }
+```
+
+**Note:** The author discourages using the `with` statement because it makes code harder to read and maintain by introducing ambiguity in variable resolution. When `with` is used, JavaScript has to dynamically determine whether a variable refers to a property of the object or to something in the outer scope, which complicates debugging and optimization. This unpredictability is why `with` is considered bad practice and is even disallowed in strict mode.
+
+Since the author discourages the use of `with`, the `Symbol.unscopables` symbol is not commonly used in practice. However, it is still part of the ECMAScript specification and can be useful in specific scenarios where you want to control which properties are accessible in a `with` statement.
+
+#### The `Object` Type

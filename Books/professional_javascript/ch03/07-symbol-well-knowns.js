@@ -374,3 +374,20 @@ console.log("\nCode block 19");
   console.log(bar.toString());          // [object Bar]
   console.log(bar[Symbol.toStringTag]); // Bar
 }
+
+console.log("\nCode block 20");
+{
+  let o = { foo: 'bar' };
+
+  with (o) {
+    console.log(foo);   // bar
+  }
+
+  o[Symbol.unscopables] = {
+    foo: true
+  };
+
+  with (o) {
+    console.log(foo);   // ReferenceError
+  }
+}
