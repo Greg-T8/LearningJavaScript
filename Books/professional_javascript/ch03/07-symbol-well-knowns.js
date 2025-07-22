@@ -322,8 +322,8 @@ console.log("\nCode block 18");
   class Foo {}
   let foo = new Foo();
 
-  console.log(3 + foo);       // '3[object Object]' -- JavaScript coerces to a string
-  console.log(3 - foo);       // NaN -- JavaScript coerces to a number
+  console.log(3 + foo);       // '3[object Object]'     Sees `+` operartor, so JavaScript calls foo.toString()
+  console.log(3 - foo);       // NaN                    Sees `-` operator, so JavaScript coerces to a number
   console.log(String(foo));   // '[object Object]'
 
 
@@ -335,7 +335,7 @@ console.log("\nCode block 18");
             return 3;
           case 'string':
             return 'string bar';
-          case 'default':
+          default:
             return 'default bar';
         }
       }
@@ -343,6 +343,7 @@ console.log("\nCode block 18");
   }
 
   let bar = new Bar();
-  console.log(3 + bar);       // '3default bar' -- JavaScript coerces to a string
-  console.log(3 - bar);       // 0: JavaScript coerces to a number
+  console.log(3 + bar);       // '3default bar'     Sees `+` operator with bar (an object), so hint becomes 'default'
+  console.log(3 - bar);       // 0:                 Sees `-` operator, so JavaScript coerces bar to a number
+  console.log(String(bar));   // 'string bar'       Sees `String()` function, so JavaScript coerces bar to a string
 }

@@ -1077,8 +1077,33 @@ There are a number of built-in operations which will attempt to coerce an object
 For a custom object instance, you can divert his behavior by defining a function on the instance's `Symbol.toPrimitive` property.
 
 ```js
+  class Foo {}
+  let foo = new Foo();
+
+  console.log(3 + foo);       // '3[object Object]'     Sees `+` operartor, so JavaScript calls foo.toString()
+  console.log(3 - foo);       // NaN                    Sees `-` operator, so JavaScript coerces to a number
+  console.log(String(foo));   // '[object Object]'
 
 
+  class Bar {
+    constructor() {
+      this[Symbol.toPrimitive] = function (hint) {
+        switch (hint) {
+          case 'number':
+            return 3;
+          case 'string':
+            return 'string bar';
+          default:
+            return 'default bar';
+        }
+      }
+    }
+  }
+
+  let bar = new Bar();
+  console.log(3 + bar);       // '3default bar'     Sees `+` operator with bar (an object), so hint becomes 'default'
+  console.log(3 - bar);       // 0:                 Sees `-` operator, so JavaScript coerces bar to a number
+  console.log(String(bar));   // 'string bar'       Sees `String()` function, so JavaScript coerces bar to a strin
 ```
 
 **Note:** In JavaScript, the `+` operator is the only binary operator that can mean either arithmetic addition or string concatenation. 
