@@ -1101,9 +1101,11 @@ For a custom object instance, you can divert his behavior by defining a function
   }
 
   let bar = new Bar();
-  console.log(3 + bar);       // '3default bar'     Sees `+` operator with bar (an object), so hint becomes 'default'
-  console.log(3 - bar);       // 0:                 Sees `-` operator, so JavaScript coerces bar to a number
-  console.log(String(bar));   // 'string bar'       Sees `String()` function, so JavaScript coerces bar to a strin
+  console.log(3 + bar);       // '3default bar'     Sees `+` with one operand as an object, so JS calls ToPrimitive(obj, "default").
+  console.log(3 - bar);       // 0:                 Sees `-`, so JS calls ToPrimitive(obj, "number").
+  console.log(String(bar));   // 'string bar'       Sees `String()` function, so JS calls ToPrimitive(obj, "string").
 ```
 
 **Note:** In JavaScript, the `+` operator is the only binary operator that can mean either arithmetic addition or string concatenation. 
+
+###### Symbol.
