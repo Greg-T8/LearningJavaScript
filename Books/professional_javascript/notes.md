@@ -40,6 +40,7 @@
   - [Operators](#operators)
     - [Unary Operators](#unary-operators)
       - [Increment/Decrement](#incrementdecrement)
+      - [Unary Plus and Minus](#unary-plus-and-minus)
 
 
 ## 3. Language Basics
@@ -1237,3 +1238,80 @@ The increment/decrement operators work on any values, including integers, string
 - Boolean that is true: converts to `1` and applies the change. The variable is changed from a `Boolean` to a `Number`.
 - Floating-point value: applies the change by adding or subtracting `1`.
 - Object: calls the `valueOf()` method to get a value to work with; then applies the other rules. If the result is `NaN`, then call `toString()` and apply the other rules again. The variable is changed from an `Object` to a `Number`.
+
+```js
+  let s1 = "2";
+  let s2 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1++;           // s1: "2" becomes numeric 3
+  s2++;           // s2: "z" becomes numeric NaN
+  b++;            // b: becomes numeric 1
+  f--;            // f: becomes 0.10000000000000009 (due to floating-point inaccuracies)
+  o--;            // o: becomes numeric -2
+```
+
+##### Unary Plus and Minus
+
+The *unary plus and minus operators* can be used to convert a value to a number or negate it.
+
+```js
+  let num = 25;
+  num = +num;
+  console.log(num); // 25 (unary plus converts to number, no change
+```
+
+When applied to a nonnumeric value, it performs the same conversion as the `Number()` casting function:
+- `Boolean` values of `false` and `true` become `0` and `1`, respectively.
+- string values are parsed according to a specific set of rules
+- objects have their `valueOf()` and/or `toString()` methods called to get a value to convert.
+
+```js
+  let s1 = "01";
+  let s2 = "1.1";
+  let s3 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1 = +s1;       // s1: "01" becomes numeric 1
+  s2 = +s2;       // s2: "1.1" becomes numeric 1.1
+  s3 = +s3;       // s3: "z" becomes numeric NaN
+  b = +b;         // b: false becomes numeric 0
+  f = +f;         // f: no change, still 1.1
+  o = +o;         // o: becomes numeric -1 (using valueOf method)
+```
+
+The unary minus operator's primary use is to negate a numeric value:
+
+```js
+  let num = 25;
+  num = -num;
+  console.log(num);   // -25 (unary minus negates the number)
+```
+
+When used on nonnumeric values, the unary minus applies the same rules as unary plus:
+
+```js
+  let s1 = "01";
+  let s2 = "1.1";
+  let s3 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1 = -s1;       // s1: "01" becomes numeric -1
+  s2 = -s2;       // s2: "1.1" becomes numeric -1.1
+  s3 = -s3;       // s3: "z" becomes numeric NaN
+  b = -b;         // b: false becomes numeric -0 (not 1, as numerical negation is different from logical negation)
+  f = -f;         // f: no change, still -1.1
+  o = -o;         // o: becomes numeric 1 (using valueOf method)
+```

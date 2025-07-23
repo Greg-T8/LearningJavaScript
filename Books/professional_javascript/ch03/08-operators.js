@@ -26,3 +26,72 @@ console.log("\nCode block 3");
   console.log(num3);        // 22
   console.log(num4);        // 21
 }
+
+console.log("\nCode block 4");
+{
+  let s1 = "2";
+  let s2 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1++;           // s1: "2" becomes numeric 3
+  s2++;           // s2: "z" becomes numeric NaN
+  b++;            // b: becomes numeric 1
+  f--;            // f: becomes 0.10000000000000009 (due to floating-point inaccuracies)
+  o--;            // o: becomes numeric -2
+}
+
+console.log("\nCode block 5");
+{
+  let num = 25;
+  num = +num;
+  console.log(num); // 25 (unary plus converts to number, no change)
+}
+
+console.log("\nCode block 6");
+{
+  let s1 = "01";
+  let s2 = "1.1";
+  let s3 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1 = +s1;       // s1: "01" becomes numeric 1
+  s2 = +s2;       // s2: "1.1" becomes numeric 1.1
+  s3 = +s3;       // s3: "z" becomes numeric NaN
+  b = +b;         // b: false becomes numeric 0
+  f = +f;         // f: no change, still 1.1
+  o = +o;         // o: becomes numeric -1 (using valueOf method)
+}
+
+console.log("\nCode block 7");
+{
+  let num = 25;
+  num = -num;
+  console.log(num);   // -25 (unary minus negates the number)
+}
+
+console.log("\nCode block 8");
+{
+  let s1 = "01";
+  let s2 = "1.1";
+  let s3 = "z";
+  let b = false;
+  let f = 1.1;
+  let o = {
+    valueOf() { return -1; }
+  };
+
+  s1 = -s1;       // s1: "01" becomes numeric -1
+  s2 = -s2;       // s2: "1.1" becomes numeric -1.1
+  s3 = -s3;       // s3: "z" becomes numeric NaN
+  b = -b;         // b: false becomes numeric -0 (not 1, as numerical negation is different from logical negation)
+  f = -f;         // f: no change, still -1.1
+  o = -o;         // o: becomes numeric 1 (using valueOf method)
+}
