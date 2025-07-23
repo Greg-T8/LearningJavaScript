@@ -37,6 +37,8 @@
       - [Using Symbols as Properties](#using-symbols-as-properties)
       - [Well-Known Symbols](#well-known-symbols)
     - [The `Object` Type](#the-object-type)
+  - [Operators](#operators)
+    - [Unary Operators](#unary-operators)
 
 
 ## 3. Language Basics
@@ -1166,3 +1168,32 @@ According to the ECMAScript specification, this symbol defines an object-valued 
 Since the author discourages the use of `with`, the `Symbol.unscopables` symbol is not commonly used in practice. However, it is still part of the ECMAScript specification and can be useful in specific scenarios where you want to control which properties are accessible in a `with` statement.
 
 #### The `Object` Type
+
+In JavaScript, objects start out as nonspecific groups of data and functionality. You can create objects using the `new` operator followed by the name of the `Object` type and adding properties to it:
+
+```js
+let o = new Object();
+```
+
+ECMAScript requires parentheses only when providing arguments, so the following is also valid (but not recommended):
+
+```js
+let o = new Object;
+```
+
+The `Object` type is the base type from which all other objects are derived. All of the properties and methods of the `Object` type are available to all objects in JavaScript. Each `Object` instance, and all derived objects, has the following properties and methods:
+
+- `constructor`: A reference to the function that created the instance. In the previous example, the constructor is the `Object()` function.
+- `hasOwnProperty(propertyName)`: Returns `true` if the property exists on the object instance (not on the prototype chain).
+- `isPrototypeOf(object)`: Determines if the object is in the prototype chain of another object.
+- `propertyIsEnumerable(propertyName)`: Indicates if the property can be enumerated in a `for...in` statement.
+- `toLocaleString()`: Returns a string representation of the object, localized to the user's locale.
+- `toString()`: Returns a string representation of the object.
+- `valueOf()`: Returns a string, number, or boolean representation of the object. It often returns the same value as `toString()`.
+
+**Note:** Objects that exist in other host implementations, such as those in the Browser Object Model (BOM) or Document Object Model (DOM) are considered host objects. Host objects may or may not directly inherit from the `Object` type.
+
+
+### Operators
+
+#### Unary Operators
