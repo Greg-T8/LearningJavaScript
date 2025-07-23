@@ -39,6 +39,7 @@
     - [The `Object` Type](#the-object-type)
   - [Operators](#operators)
     - [Unary Operators](#unary-operators)
+      - [Increment/Decrement](#incrementdecrement)
 
 
 ## 3. Language Basics
@@ -1197,3 +1198,42 @@ The `Object` type is the base type from which all other objects are derived. All
 ### Operators
 
 #### Unary Operators
+
+##### Increment/Decrement
+
+```js
+  let age = 29;
+  let anotherAge = --age + 2; // Pre-decrement operator
+
+  console.log(age); // 28
+  console.log(anotherAge); // 30
+```
+
+```js
+  let num1 = 2;
+  let num2 = 20;
+  let num3 = --num1 + num2;   // Pre-decrement operator occurs before addition
+  let num4 = num1 + num2;
+  console.log(num3);          // 21
+  console.log(num4);          // 21
+```
+
+When mixed together with other operations, the increment and decrement operators can lead to unexpected results due to operator precedence:
+
+```js
+  let num1 = 2;
+  let num2 = 20;
+  let num3 = num1-- + num2;
+  let num4 = num1 + num2;
+  console.log(num3);        // 22
+  console.log(num4);        // 21
+```
+
+The increment/decrement operators work on any values, including integers, strings, Booleans, floating-point values, and objects using the following rules:
+
+- String that represents a number: converts to a number and applies the change. The variable is changed from a `String` to a `Number`.
+- String that is not a valid number: the variable's value is set to `NaN`. The variable is changed from a `String` to a `Number`.
+- Boolean that is false: converts to `0` and applies the change. The variable is changed from a `Boolean` to a `Number`.
+- Boolean that is true: converts to `1` and applies the change. The variable is changed from a `Boolean` to a `Number`.
+- Floating-point value: applies the change by adding or subtracting `1`.
+- Object: calls the `valueOf()` method to get a value to work with; then applies the other rules. If the result is `NaN`, then call `toString()` and apply the other rules again. The variable is changed from an `Object` to a `Number`.
