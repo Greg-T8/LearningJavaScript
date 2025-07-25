@@ -54,6 +54,8 @@
       - [Logical AND](#logical-and)
       - [Logical OR](#logical-or)
     - [Multiplicative Operators](#multiplicative-operators)
+      - [Multiply](#multiply)
+      - [Divide](#divide)
 
 
 ## 3. Language Basics
@@ -1472,3 +1474,18 @@ The following rules apply:
 
 #### Multiplicative Operators
 
+The three multiplicative operators in JavaScript are multiplication (`*`), division (`/`), and remainder (`%`). These operators work similar to other languages, but they also include some automatic type conversions when dealing with non-numeric values.
+
+If either of the operands is not a number, it is converted to a number using the `Number()` casting function. This means that an empty string is treated as `0`, and the Boolean value of `true` is treated as `1`.
+
+##### Multiply
+
+Has the following unique behaviors:
+- If operands are numbers and the result cannot be represented as a finite number, it returns `Infinity` or `-Infinity`.
+- If either operand is `NaN`, the result is `NaN`.
+- If `Infinity` is multiplied by `0`, the result is `NaN`.
+- If `Infinity` is multiplied by a finite number other than `0`, the result is `Infinity` or `-Infinity` depending on the sign of the finite number.
+- If `Infinity` is multiplied by `Infinity`, the result is `Infinity`.
+- If either operand isn't anumber, it is converted to a number using the `Number()` casting function, and then the other rules are applied.
+
+##### Divide
