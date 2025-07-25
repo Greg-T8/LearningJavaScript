@@ -45,6 +45,10 @@
       - [Bitwise NOT](#bitwise-not)
       - [Bitwise AND](#bitwise-and)
       - [Bitwise OR](#bitwise-or)
+      - [Bitwise XOR](#bitwise-xor)
+      - [Bitwise Left Shift](#bitwise-left-shift)
+      - [Bitwise Right Shift](#bitwise-right-shift)
+      - [Unsigned Right Shift](#unsigned-right-shift)
 
 
 ## 3. Language Basics
@@ -1353,3 +1357,52 @@ The bitwise OR operator (`|`) performs a bitwise OR operation on two numbers and
   let result = 25 | 3; // Bitwise OR operation
   console.log(result); // 27 (binary: 00011001 | 00000011 = 00011011)
 ```
+
+##### Bitwise XOR
+
+The bitwise XOR operator (`^`) performs a bitwise exclusive OR operation on two numbers and returns the result. It compares each bit of the first operand with the corresponding bit of the second operand, returning `1` if the bits are different, otherwise returning `0`.
+
+```js
+  let result = 25 ^ 3; // Bitwise XOR operation
+  console.log(result); // 26 (binary: 00011001 ^ 00000011 = 00011010)
+```
+
+##### Bitwise Left Shift
+
+The bitwise left shift operator (`<<`) shifts the bits of a number to the left by a specified number of positions, filling the rightmost bits with `0`. This effectively multiplies the number by `2` for each position shifted.
+
+```js
+  let oldValue = 2;
+  let newValue = oldValue << 5; // Bitwise left shift operation
+  console.log(newValue); // 64 (binary: 00000010 << 5 = 00100000)
+```
+
+**Note:** The left shift preserves the sign of the number, so it works correctly for both positive and negative numbers.
+
+##### Bitwise Right Shift
+
+The bitwise right shift operator (`>>`) shifts the bits of a number to the right by a specified number of positions, filling the leftmost bits with the sign bit (the leftmost bit). This effectively divides the number by `2` for each position shifted.
+
+```js
+  let oldValue = 64;  // binary: 01000000
+  let newValue = oldValue >> 5; // Bitwise right shift operation
+  console.log(newValue); // 2 (binary: 01000000 >> 5 = 00000010)
+```
+
+##### Unsigned Right Shift
+
+The unsigned right shift operator (`>>>`) shifts the bits of a number to the right by a specified number of positions, filling the leftmost bits with `0`. This effectively divides the number by `2` for each position shifted, without preserving the sign.
+
+```js
+  let oldValue = 64; // binary: 01000000
+  let newValue = oldValue >>> 5; // Unsigned right shift operation
+  console.log(newValue); // 2 (binary: 01000000 >>> 5 = 00000010)
+```
+
+
+```js
+  let oldValue = -64;             // binary: 11111111111111111111111111000000
+  let newValue = oldValue >>> 5;  // Unsigned right shift operation
+  console.log(newValue);          // 134217726 (binary: 00000111111111111111111111111110) - shifted positions filled with 0
+```
+

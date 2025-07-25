@@ -114,3 +114,37 @@ console.log("\nCode block 11");
   let result = 25 | 3; // Bitwise OR operation
   console.log(result); // 27 (binary: 00011001 | 00000011 = 00011011)
 }
+
+console.log("\nCode block 12");
+{
+  let result = 25 ^ 3; // Bitwise XOR operation
+  console.log(result); // 26 (binary: 00011001 ^ 00000011 = 00011010)
+}
+
+console.log("\nCode block 13");
+{
+  let oldValue = 2;
+  let newValue = oldValue << 5; // Bitwise left shift operation
+  console.log(newValue); // 64 (binary: 00000010 << 5 = 00100000)
+}
+
+console.log("\nCode block 14");
+{
+  let oldValue = 64;  // binary: 01000000
+  let newValue = oldValue >> 5; // Bitwise right shift operation
+  console.log(newValue); // 2 (binary: 01000000 >> 5 = 00000010)
+}
+
+console.log("\nCode block 15");
+{
+  let oldValue = -64;             // binary: 11111111111111111111111111000000
+  let newValue = oldValue >>> 5;  // Unsigned right shift operation
+  console.log(newValue);          // 134217726 (binary: 00000111111111111111111111111110)
+}
+
+console.log("\nCode block 16");
+{
+  let oldValue = 64; // binary: 01000000
+  let newValue = oldValue >>> 5; // Unsigned right shift operation
+  console.log(newValue); // 2 (binary: 01000000 >>> 5 = 00000010)
+}
