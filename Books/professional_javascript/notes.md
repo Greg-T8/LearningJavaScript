@@ -41,6 +41,10 @@
     - [Unary Operators](#unary-operators)
       - [Increment/Decrement](#incrementdecrement)
       - [Unary Plus and Minus](#unary-plus-and-minus)
+    - [Bitwise Operators](#bitwise-operators)
+      - [Bitwise NOT](#bitwise-not)
+      - [Bitwise AND](#bitwise-and)
+      - [Bitwise OR](#bitwise-or)
 
 
 ## 3. Language Basics
@@ -1311,7 +1315,41 @@ When used on nonnumeric values, the unary minus applies the same rules as unary 
   s1 = -s1;       // s1: "01" becomes numeric -1
   s2 = -s2;       // s2: "1.1" becomes numeric -1.1
   s3 = -s3;       // s3: "z" becomes numeric NaN
-  b = -b;         // b: false becomes numeric -0 (not 1, as numerical negation is different from logical negation)
+  b = -b;         // b: false becomes numeric -0 (not 1, as negating 0 gives -0)
   f = -f;         // f: no change, still -1.1
   o = -o;         // o: becomes numeric 1 (using valueOf method)
+```
+
+#### Bitwise Operators
+
+All numbers in ECMAScript are stored in IEEE-756 64-bit format. For bitwise operations, the value is converted into a 32-bit integer, the operation takes place, and the result is converted back to 64 bits. To the developer, it appears that only the 32-bit integer exists because the 64-bit storage format is transparent.
+
+**Note:** By default, all integers are represented as signed in ECMAScript. 
+
+##### Bitwise NOT
+
+The bitwise NOT operator (`~`) inverts the bits of a number and returns the one's complement of the number. 
+
+```js
+  let num1 = 25;      // binary: 00000000000000000000000000011001
+  let num2 = ~num1;   // bitwise NOT: 11111111111111111111111111100110
+  console.log(num2);  // -26 (bitwise NOT inverts bits, resulting in one's complement)
+```
+
+##### Bitwise AND
+
+The bitwise AND operator (`&`) performs a bitwise AND operation on two numbers and returns the result. It compares each bit of the first operand with the corresponding bit of the second operand, returning `1` if both bits are `1`, otherwise returning `0`.
+
+```js
+  let result = 5 & 3; // Bitwise AND operation
+  console.log(result); // 1 (binary: 0101 & 0011 = 0001)
+```
+
+##### Bitwise OR
+
+The bitwise OR operator (`|`) performs a bitwise OR operation on two numbers and returns the result. It compares each bit of the first operand with the corresponding bit of the second operand, returning `1` if either bit is `1`, otherwise returning `0`.
+
+```js
+  let result = 25 | 3; // Bitwise OR operation
+  console.log(result); // 27 (binary: 00011001 | 00000011 = 00011011)
 ```

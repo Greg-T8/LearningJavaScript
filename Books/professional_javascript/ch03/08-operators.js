@@ -95,3 +95,22 @@ console.log("\nCode block 8");
   f = -f;         // f: no change, still -1.1
   o = -o;         // o: becomes numeric 1 (using valueOf method)
 }
+
+console.log("\nCode block 9");
+{
+  let num1 = 25;      // binary: 00000000000000000000000000011001
+  let num2 = ~num1;   // bitwise NOT: 11111111111111111111111111100110
+  console.log(num2); // -26 (bitwise NOT inverts bits, resulting in one's complement)
+}
+
+console.log("\nCode block 10");
+{
+  let result = 5 & 3; // Bitwise AND operation
+  console.log(result); // 1 (binary: 0101 & 0011 = 0001)
+}
+
+console.log("\nCode block 11");
+{
+  let result = 25 | 3; // Bitwise OR operation
+  console.log(result); // 27 (binary: 00011001 | 00000011 = 00011011)
+}
