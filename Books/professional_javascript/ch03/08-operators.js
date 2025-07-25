@@ -148,3 +148,29 @@ console.log("\nCode block 16");
   let newValue = oldValue >>> 5; // Unsigned right shift operation
   console.log(newValue); // 2 (binary: 01000000 >>> 5 = 00000010)
 }
+
+console.log("\nCode block 17");
+{
+  console.log(!false);  // true (logical NOT)
+  console.log(!"blue"); // false (non-empty string is truthy)
+  console.log(!0);      // true (0 is falsy)
+  console.log(!NaN);    // true (NaN is falsy)
+  console.log(!"");     // true (empty string is falsy)
+  console.log(!12345);  // false (non-zero number is truthy)
+}
+
+console.log("\nCode block 18");
+{
+  console.log(!!false);  // false (double NOT converts to Boolean)
+  console.log(!!0);      // false (0 is falsy)
+  console.log(!!NaN);    // false (NaN is falsy)
+  console.log(!!"");     // false (empty string is falsy)
+  console.log(!!12345);  // true (non-zero number is truthy)
+}
+
+console.log("\nCode block 19");
+{
+  let found = true;
+  let result = (found && someUndeclaredVariable); // error occurs here
+  console.log(result);  // Never executes
+}

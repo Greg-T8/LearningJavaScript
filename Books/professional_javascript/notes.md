@@ -49,6 +49,11 @@
       - [Bitwise Left Shift](#bitwise-left-shift)
       - [Bitwise Right Shift](#bitwise-right-shift)
       - [Unsigned Right Shift](#unsigned-right-shift)
+    - [Boolean Operators](#boolean-operators)
+      - [Logical NOT](#logical-not)
+      - [Logical AND](#logical-and)
+      - [Logical OR](#logical-or)
+    - [Multiplicative Operators](#multiplicative-operators)
 
 
 ## 3. Language Basics
@@ -1405,4 +1410,65 @@ The unsigned right shift operator (`>>>`) shifts the bits of a number to the rig
   let newValue = oldValue >>> 5;  // Unsigned right shift operation
   console.log(newValue);          // 134217726 (binary: 00000111111111111111111111111110) - shifted positions filled with 0
 ```
+
+
+#### Boolean Operators
+
+##### Logical NOT
+
+The logical NOT operator (`!`) converts the operand to a Boolean and then negates it. It behaves in the following ways:
+- If the operand is an object, returns `false`.
+- If the operand is an empty string, returns `true`.
+- If the operand is a non-empty string, returns `false`.
+- If the operand is `0`, returns `true`.
+- If the operand is any number other than `0` (including `Infinity`), returns `false`.
+- If the operand is `null`, returns `true`.
+- If the operand is `NaN`, returns `true`.
+- If the operand is `undefined`, returns `true`.
+
+```js
+  console.log(!false);  // true (logical NOT)
+  console.log(!"blue"); // false (non-empty string is truthy)
+  console.log(!0);      // true (0 is falsy)
+  console.log(!NaN);    // true (NaN is falsy)
+  console.log(!"");     // true (empty string is falsy)
+  console.log(!12345);  // false (non-zero number is truthy)
+```
+
+By using two logical NOT operators (`!!`), you can convert any value to its Boolean equivalent. The first `!` returns a Boolean value, and the second `!` negates it back to the original truthiness:
+
+```js
+  console.log(!!false);  // false (double NOT converts to Boolean)
+  console.log(!!0);      // false (0 is falsy)
+  console.log(!!NaN);    // false (NaN is falsy)
+  console.log(!!"");     // false (empty string is falsy)
+  console.log(!!12345);  // true (non-zero number is truthy
+```
+
+##### Logical AND
+
+The logical AND operator (`&&`) evaluates two operands and returns the first falsy value it encounters, or the last value if both are truthy. It can be used for short-circuit evaluation, where the second operand is evaluated only if the first is truthy.
+
+Logical AND can be used with any type of operand, not just Boolean values. When either operand is not a Boolean value, the following rules apply:
+- If the first operand is an object, the second operand is always returned.
+- If the second operand is an object, then the object is returned only if the first operand evaluates to `true`.
+- If both operands are objects, then the second operand is returned.
+- If either operand is `null`, then `null` is returned.
+- If either operand is `NaN`, then `NaN` is returned.
+- If either operand is `undefined`, then `undefined` is returned.
+
+
+##### Logical OR
+
+The logical OR operator (`||`) evaluates two operands and returns the first truthy value it encounters, or the last value if both are falsy. It can also be used for short-circuit evaluation, where the second operand is evaluated only if the first is falsy.
+
+The following rules apply:
+- If the first operand is an object, the second operand is always returned.
+- If the first operand evaluates to `false`, then the second operand is returned.
+- If both operands are objects, then the first operand is returned.
+- If both operands are `null`, then `null` is returned.
+- If both operands are `NaN`, then `NaN` is returned.
+- If both operands are `undefined`, then `undefined` is returned.
+
+#### Multiplicative Operators
 
