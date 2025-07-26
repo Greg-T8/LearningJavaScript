@@ -171,8 +171,8 @@ console.log("\nCode block 18");
 console.log("\nCode block 19");
 {
   let found = true;
-  let result = (found && someUndeclaredVariable); // error occurs here
-  console.log(result);  // Never executes
+  // let result = (found && someUndeclaredVariable); // error occurs here
+  // console.log(result);  // Never executes
 }
 
 console.log("\nCode block 20");
@@ -191,7 +191,35 @@ console.log("\nCode block 21");
   console.log(Math.pow(3, 2));    // 9 (3 raised to the power of 2)
   console.log(3 ** 2);            // 9 (3 raised to the power of 2 using exponentiation operator
 
-  let sqrt = 16;
+  sqrt = 16;
   sqrt **= 0.5;
   console.log(sqrt);              // 4 (16 raised to the power of 0.5, which is the square root)
+}
+
+console.log("\nCode block 22");
+{
+  let result1 = 5 + 5;            // two numbers
+  console.log(result1);           // 10
+
+  let result2 = "5" + 5;          // string and number
+  console.log(result2);           // "55" (string concatenation)
+}
+
+console.log("\nCode block 23");
+{
+  let num1 = 5;
+  let num2 = 10;
+  let message = "The sum of 5 and 10 is: " + num1 + num2; // string concatenation
+  console.log(message); // "The sum of 5 and 10 is: 510" (concatenation happens left to right)
+  console.log("The sum of 5 and 10 is: " + (num1 + num2)); // "The sum of 5 and 10 is: 15" (parentheses change order of operations)
+}
+
+console.log("\nCode block 24");
+{
+  let result1 = 5 - true;           // 4: 5 - 1 (true is converted to 1)
+  let result2 = NaN - 1;            // NaN
+  let result3 = 5 - 3;              // 2: 5 - 3
+  let result4 = 5 - "";             // 5: 5 - 0 (empty string is converted to 0)
+  let result5 = 5 - "2";            // 3: 5 - 2 (string "2" is converted to number 2)
+  let result6 = 5 - null;           // 5: 5 - 0 (null is converted to 0)
 }

@@ -58,6 +58,9 @@
       - [Divide](#divide)
       - [Modulus](#modulus)
       - [Exponentiation Operator](#exponentiation-operator)
+    - [Additive Operators](#additive-operators)
+      - [Add](#add)
+      - [Subtract](#subtract)
 
 
 ## 3. Language Basics
@@ -1538,4 +1541,64 @@ The operator also gets its own exponentiate assignment operator (`**=`) that all
   let sqrt = 16;
   sqrt **= 0.5;
   console.log(sqrt);              // 4 (16 raised to the power of 0.5, which is the square root)
+```
+
+#### Additive Operators
+
+##### Add
+
+The following rules apply:
+- If both operands are numbers, regular arithmetic addition is performed.
+- If either operand is `NaN`, the result is `NaN`.
+- If either operand is added to `Infinity` or `-Infinity`, the result is `Infinity` or `-Infinity` depending on the sign of the other operand.
+- If `Infinity` is added to `-Infinity`, the result is `NaN`.
+- If `+0` is added to `+0`, the result is `+0`.
+- If `-0` is added to `+0`, the result is `+0`.
+- If `-0` is added to `-0`, the result is `-0`.
+- If either operand is a string, then the following rules apply:
+  - If both operands are strings, the second string is concatenated to the first string.
+  - If only one operand is a string, the other operand is converted to a string and the result is the concatenation of the two strings.
+- If either operand is an object, number, or a Boolean, its `toString()` method is called to get a string value, and then the previous rules are applied.
+- For `undefined` and `null`, the `String()` function returns the string `"undefined"` and `"null"` respectively.
+
+```js
+  let result1 = 5 + 5;            // two numbers
+  console.log(result1);           // 10
+
+  let result2 = "5" + 5;          // string and number
+  console.log(result2);           // "55" (string concatenation)
+```
+
+A common mistake:
+
+```js
+  let num1 = 5;
+  let num2 = 10;
+  let message = "The sum of 5 and 10 is: " + num1 + num2;     // string concatenation
+  console.log(message);                                       // "The sum of 5 and 10 is: 510" (concatenation happens left to right)
+  console.log("The sum of 5 and 10 is: " + (num1 + num2));    // "The sum of 5 and 10 is: 15" (parentheses change order of operations)
+```
+
+##### Subtract
+
+The subtract operator (`-`) has the following special rules:
+- If the two operands are numbers, regular arithmetic subtraction is performed.
+- If either operand is `NaN`, the result is `NaN`.
+- If `Infinity` is subtracted from `Infinity`, the result is `NaN`.
+- If `-Infinity` is subtracted from `-Infinity`, the result is `NaN`.
+- If `-Infinity` is subtracted from `Infinity`, the result is `Infinity`.
+- If `Infinity` is subtracted from `-Infinity`, the result is `-Infinity`.
+- If `+0` is subtracted from `+0`, the result is `+0`.
+- If `-0` is subtracted from `+0`, the result is `-0`.
+- If `-0` is subtracted from `-0`, the result is `+0`.
+- If either operand is a string, a Boolean, `null`, or `undefined`, it is converted to a number using the `Number()` casting function, and then the previous rules are applied. If that conversion results in `NaN`, then the result is `NaN`.
+- If either operand is an object, its `valueOf()` method is called to get a numeric value. If the object doesn't have `valueOf()` defined, then `toString()` is called, and the resulting string is converted to a number. 
+
+```js
+  let result1 = 5 - true;           // 4: 5 - 1 (true is converted to 1)
+  let result2 = NaN - 1;            // NaN
+  let result3 = 5 - 3;              // 2: 5 - 3
+  let result4 = 5 - "";             // 5: 5 - 0 (empty string is converted to 0)
+  let result5 = 5 - "2";            // 3: 5 - 2 (string "2" is converted to number 2)
+  let result6 = 5 - null;           // 5: 5 - 0 (null is converted to 0)
 ```
