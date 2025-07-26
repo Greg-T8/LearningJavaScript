@@ -56,6 +56,7 @@
     - [Multiplicative Operators](#multiplicative-operators)
       - [Multiply](#multiply)
       - [Divide](#divide)
+      - [Modulus](#modulus)
 
 
 ## 3. Language Basics
@@ -150,7 +151,10 @@ See [04-number_type.js](./ch03/04-number_type.js) for examples.
   - `Number()`: Converts a value to a number. If the value cannot be converted, it returns `NaN`.
   - `parseInt()`: Converts a string to an integer. If the string cannot be converted, it returns `NaN`. It ignores leading whitespace and stops parsing at the first non-numeric character.
   - `parseFloat()`: Converts a string to a floating-point number. It ignores leading whitespace and stops parsing at the first non-numeric character.
-- The `Number()` function as a lot of complexities when converting string, so the author recommends using `parseInt()`  when you are dealing with integers.
+- The `Number()` function has a lot of complexities when converting string, so the author recommends using `parseInt()`  when you are dealing with integers.
+
+**Note:** The `Number()` function is used by operators like `+`, `-`, `*`, `/`, and `%` to convert values to numbers before performing arithmetic operations.
+
 
 ```js
   console.log(Number("Hello world!")); // NaN
@@ -1481,6 +1485,7 @@ If either of the operands is not a number, it is converted to a number using the
 ##### Multiply
 
 Has the following unique behaviors:
+- If the operands are numbers, regular arithmetic multiplication is performed. If the result can't be represented in ECMAScript, it returns `Infinity` or `-Infinity`.
 - If operands are numbers and the result cannot be represented as a finite number, it returns `Infinity` or `-Infinity`.
 - If either operand is `NaN`, the result is `NaN`.
 - If `Infinity` is multiplied by `0`, the result is `NaN`.
@@ -1489,3 +1494,26 @@ Has the following unique behaviors:
 - If either operand isn't anumber, it is converted to a number using the `Number()` casting function, and then the other rules are applied.
 
 ##### Divide
+
+Has the following special behaviors:
+- If the operands are numbers, regular arithmetic division is performed. If the result can't be represented in ECMAScript, it returns `Infinity` or `-Infinity`.
+- If either operand is `NaN`, the result is `NaN`.
+- If `Infinity` is divided by `Infinity`, the result is `NaN`.
+- If a nonzero finite number is divided by `0`, the result is `Infinity` or `-Infinity` depending on the sign of the first operand.
+- If `Infinity` is divided by any number, the result is either `Infinity` or `-Infinity`, deepending on the sign of the second operand.
+- If either operand isn't a number, it is converted to a number using the `Number()` casting function, and then the other rules are applied.
+
+ ##### Modulus
+
+ Has the following special behaviors:
+- If the operands are numbers, regular arithmetic division is performed, and the remainder is returned.
+- If the dividend is an infinite number and the divisor is a finite number, the result is `NaN`.
+- If the dividend is a finite number and the divisor is `0`, the result is `NaN`.
+- If `Infinity` is divided by `Infinity`, the result is `NaN`.
+- If the dividend is a finite number and the divisor is an infinite number, the result is the dividend.
+```js
+> 5 % Infinity
+5
+```
+- If the dividend is zero and the divisor is zero, the result is zero.
+- If either operand isn't a number, it is converted to a number using the `Number()` casting function, and then the other rules are applied.

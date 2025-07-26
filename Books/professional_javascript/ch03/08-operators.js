@@ -174,3 +174,4 @@ console.log("\nCode block 19");
   let result = (found && someUndeclaredVariable); // error occurs here
   console.log(result);  // Never executes
 }
+
