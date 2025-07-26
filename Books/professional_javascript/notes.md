@@ -57,6 +57,7 @@
       - [Multiply](#multiply)
       - [Divide](#divide)
       - [Modulus](#modulus)
+      - [Exponentiation Operator](#exponentiation-operator)
 
 
 ## 3. Language Basics
@@ -1517,3 +1518,24 @@ Has the following special behaviors:
 ```
 - If the dividend is zero and the divisor is zero, the result is zero.
 - If either operand isn't a number, it is converted to a number using the `Number()` casting function, and then the other rules are applied.
+
+##### Exponentiation Operator
+
+The exponentiation operator (`**`) raises the first operand to the power of the second operand. It is equivalent to using the `Math.pow()` function but is more concise.
+
+```js
+  console.log(Math.pow(3, 2));    // 9 (3 raised to the power of 2)
+  console.log(3 ** 2);            // 9 (3 raised to the power of 2 using exponentiation operator)
+```
+
+The operator also gets its own exponentiate assignment operator (`**=`) that allows you to raise a variable to a power and assign the result back to the variable:
+
+```js
+  let squared = 3;
+  squared **= 2;                  // Exponentiation assignment operator
+  console.log(squared);           // 9 (3 raised to the power of 2)
+
+  let sqrt = 16;
+  sqrt **= 0.5;
+  console.log(sqrt);              // 4 (16 raised to the power of 0.5, which is the square root)
+```

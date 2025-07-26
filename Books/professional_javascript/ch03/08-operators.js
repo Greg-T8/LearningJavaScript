@@ -175,3 +175,23 @@ console.log("\nCode block 19");
   console.log(result);  // Never executes
 }
 
+console.log("\nCode block 20");
+{
+  console.log(Math.pow(3, 2));    // 9 (3 raised to the power of 2)
+  console.log(3 ** 2);            // 9 (3 raised to the power of 2 using exponentiation operator)
+}
+
+console.log("\nCode block 21");
+{
+  let squared = 3;
+  squared **= 2;                  // Exponentiation assignment operator
+  console.log(squared);           // 9 (3 raised to the power of 2)
+
+  let sqrt = 1
+  console.log(Math.pow(3, 2));    // 9 (3 raised to the power of 2)
+  console.log(3 ** 2);            // 9 (3 raised to the power of 2 using exponentiation operator
+
+  let sqrt = 16;
+  sqrt **= 0.5;
+  console.log(sqrt);              // 4 (16 raised to the power of 0.5, which is the square root)
+}
