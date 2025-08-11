@@ -67,6 +67,19 @@
       - [Identically Equal (`===`) and Not Identically Equal (`!==`)](#identically-equal--and-not-identically-equal-)
     - [Conditional Operator](#conditional-operator)
     - [Nullish Coalescing Operator](#nullish-coalescing-operator)
+    - [Assignment Operators](#assignment-operators)
+    - [Comma Operator](#comma-operator)
+  - [Statements](#statements)
+    - [The `if` Statement](#the-if-statement)
+    - [The `do-while` Statement](#the-do-while-statement)
+    - [The `while` Statement](#the-while-statement)
+    - [The `for` Statement](#the-for-statement)
+    - [The `for...in` Statement](#the-forin-statement)
+    - [The `for...of` Statement](#the-forof-statement)
+    - [Labeled Statements](#labeled-statements)
+    - [The `break` and `continue` Statements](#the-break-and-continue-statements)
+    - [The `switch` Statement](#the-switch-statement)
+  - [Functions](#functions)
 
 
 ## 3. Language Basics
@@ -1762,5 +1775,385 @@ const values = [null, undefined, 0, ""];            // Example values including 
 
 console.log(values.map(x => x || "default"));       // ["default", "default", "default", "default"]
 
-console.log(values.map(x => x ?? "default"));       // ["default", "default", 0, ""]
+console.log(values.map(x => x ?? "default"));       // ["default", "default", 0, ""]  Note: 0 and "" are preserved with ??, but not with ||
 ```
+
+#### Assignment Operators
+
+A simple assignment (`=`) sets the variable on the left to the value on the right.
+
+```js
+let num = 10;
+```
+
+A compound assignment combines an operator with `=` to shorten common operations.
+
+```javascript
+let num = 10;
+num = num + 10;
+```
+can be written as:
+
+```javascript
+let num = 10;
+num += 10;
+```
+JavaScript includes compound-assignment operators for common math, bitwise, and logical operations. They combine the operation with assignment.
+
+* Multiply/assign: `*=`
+* Exponentiation/assign: `**=`
+* Divide/assign: `/=`
+* Modulus/assign: `%=`
+* Add/assign: `+=`
+* Subtract/assign: `-=`
+* Left shift/assign: `<<=`
+* Signed right shift/assign: `>>=`
+* Unsigned right shift/assign: `>>>=`
+* Bitwise OR/assign: `|=`
+* Bitwise AND/assign: `&=`
+* Bitwise XOR/assign: `^=`
+* Logical OR/assign: `||=`
+* Logical AND/assign: `&&=`
+* Nullish coalescing/assign: `??=`
+
+#### Comma Operator
+
+The comma operator lets you perform multiple operations in one statement. For example:
+
+`let num1 = 1, num2 = 2, num3 = 3;`
+
+It’s most commonly used for declaring multiple variables, but it can also be used in assignments. In that case, it returns the last value in the expression:
+
+```javascript
+let num = (5, 1, 4, 8, 0); // num is 0
+```
+Here, `num` gets `0` because that’s the final value in the sequence. While this usage is rare, it’s useful to know it exists.
+
+### Statements
+
+ECMA-262 defines several statements, also called flow-control statements. These make up much of ECMAScript’s syntax. A statement can be simple, like exiting a function, or complex, like running a set of commands repeatedly.
+
+#### The `if` Statement
+
+The `if` statement is one of the most common in programming. Its syntax is:
+
+`if (condition) statement1 else statement2`
+
+The condition can be any expression. ECMAScript converts the result to a Boolean using `Boolean()`. If the condition is true, `statement1` runs; if false, `statement2` runs. Each statement can be a single line or a block of code in braces.
+
+Example with a single line and a block:
+
+```javascript
+if (i > 25)
+  console.log("Greater than 25.");            // one-line statement (without braces)
+else {
+  console.log("Less than or equal to 25.");   // block statement
+}
+```
+Best practice is to always use blocks, even for one-line statements, to avoid mistakes.
+
+You can also chain conditions with `else if`:
+
+```javascript
+if (i > 25) {
+  console.log("Greater than 25.");
+} else if (i < 0) {
+  console.log("Less than 0.");
+} else {
+  console.log("Between 0 and 25, inclusive.");
+}
+```
+
+#### The `do-while` Statement
+
+The `do...while` statement is a post-test loop, meaning it checks the condition only after running the loop’s body. This guarantees the code inside runs at least once.
+
+```javascript
+do {
+  statement
+} while (expression);
+```
+
+Example:
+
+```javascript
+let i = 0;
+do {
+  i += 2;
+} while (i < 10);
+```
+Here, `i` starts at 0 and increases by 2 each loop, continuing while `i` is less than 10.
+
+Post-test loops are useful when the loop body must run at least once before checking the condition.
+
+#### The `while` Statement
+
+The `while` statement is a pretest loop, meaning it checks the condition before running the loop body. This means the code inside may not run at all if the condition is false from the start.
+
+```javascript
+while (expression)
+  statement
+```
+
+Example:
+
+```javascript
+let i = 0;
+while (i < 10) {
+  i += 2;
+}
+```
+
+Here, `i` starts at 0 and increases by 2 each time. The loop continues as long as `i` is less than 10.
+
+#### The `for` Statement
+
+The `for` statement is a pretest loop, like `while`, but it also lets you set up variables before the loop starts and define code to run after each iteration.
+
+```javascript
+for (initialization; expression; postLoopExpression)
+  statement
+```
+
+Example:
+
+```javascript
+let count = 10;
+for (let i = 0; i < count; i++) {
+  console.log(i);
+}
+```
+
+Here, `i` starts at 0. The loop runs only if `i < count` is true. After each run, the post-loop expression (`i++`) executes.
+
+This is equivalent to:
+
+```javascript
+let count = 10;
+let i = 0;
+while (i < count) {
+  console.log(i);
+  i++;
+}
+```
+
+A `for` loop doesn’t do anything a `while` loop can’t&mdash;it just keeps all loop-related logic in one place. Usually, the loop’s iterator isn’t needed afterward, so it’s best to declare it with `let` inside the loop to limit its scope.
+
+In a `for` loop, the initialization, condition, and post-loop expressions are all optional.
+
+You can create an infinite loop by leaving all three out:
+
+```javascript
+for (;;) {  // infinite loop
+  doSomething();
+}
+```
+
+If you include only the condition, the loop works like a `while` loop:
+
+```javascript
+let count = 10;
+let i = 0;
+for (; i < count; ) {
+  console.log(i);
+  i++;
+}
+```
+This flexibility is one reason the `for` loop is among the most widely used in JavaScript.
+
+#### The `for...in` Statement
+
+The `for...in` statement iterates over the non-symbol keyed properties of an object.
+
+```javascript
+for (property in expression)
+  statement
+```
+
+Example:
+
+```javascript
+for (const propName in window) {
+  document.write(propName);
+}
+```
+
+Here, each loop assigns `propName` to a property name from the `window` object until all enumerable properties are processed.
+
+Using `const` for the loop variable is recommended to prevent changes, though not required.
+
+Property order is not guaranteed—results can vary between browsers. All enumerable properties appear once, but the sequence may differ.
+
+If the object is `null` or `undefined`, the loop body won’t run at all.
+
+#### The `for...of` Statement
+
+The `for...of` statement loops through the values of an iterable object.
+
+```javascript
+for (property of expression)
+  statement
+```
+
+Example:
+
+```javascript
+for (const el of [2, 4, 6, 8]) {
+  document.write(el);
+}
+```
+
+In this example, each array element is assigned to `el` in sequence until all values are processed.
+
+Using `const` for the loop variable is recommended to keep it from being reassigned, though it’s not required.
+
+The loop follows the order defined by the iterable’s `next()` method. If the target isn’t iterable, it throws an error.
+
+**Note:** `for...of` also has an async version, `for await...of`, for iterating over async iterables that yield promises.
+
+#### Labeled Statements
+
+You can label statements for later reference using this syntax:
+
+```javascript
+label: statement
+```
+
+Example:
+
+```javascript
+start: for (let i = 0; i < count; i++) {
+  console.log(i);
+}
+```
+
+Here, the label `start` can be used with `break` or `continue` to control the loop. Labels are most often used with nested loops.
+
+#### The `break` and `continue` Statements
+
+The `break` and `continue` statements give more control over loop execution.
+
+* **`break`** stops the loop immediately and continues with the code after the loop.
+* **`continue`** skips the rest of the current iteration and moves to the next one.
+
+Example with `break`:
+
+```javascript
+let num = 0;
+for (let i = 1; i < 10; i++) {
+  if (i % 5 == 0) {
+    break;
+  }
+  num++;
+}
+console.log(num); // 4
+```
+Here, the loop stops when `i` reaches 5, so `num` is incremented only 4 times.
+
+Example with `continue`:
+
+```javascript
+let num = 0;
+for (let i = 1; i < 10; i++) {
+  if (i % 5 == 0) {
+    continue;
+  }
+  num++;
+}
+console.log(num); // 8
+```
+
+This skips the increment when `i` is 5 but continues the loop, so `num` ends at 8 instead of 9.
+
+Both `break` and `continue` can work with labels, which are useful for nested loops.
+
+Example with **`break` and label**:
+
+```javascript
+let num = 0;
+outermost:
+for (let i = 0; i < 10; i++) {
+  for (let j = 0; j < 10; j++) {
+    if (i == 5 && j == 5) {
+      break outermost;
+    }
+    num++;
+  }
+}
+console.log(num); // 55
+```
+
+Here, `break outermost` stops both loops when `i` and `j` are both 5.
+
+Example with **`continue` and label**:
+
+```javascript
+let num = 0;
+outermost:
+for (let i = 0; i < 10; i++) {
+  for (let j = 0; j < 10; j++) {
+    if (i == 5 && j == 5) {
+      continue outermost;
+    }
+    num++;
+  }
+}
+console.log(num); // 95
+```
+
+In this case, when `i` and `j` are 5, the rest of the inner loop is skipped and the outer loop moves to the next iteration, skipping 5 increments total.
+
+Labeled `break` and `continue` can be powerful but should be used sparingly. Keep labels descriptive and avoid deeply nested loops.
+
+#### The `switch` Statement
+
+The `switch` statement is another flow-control structure, similar to `if`, but often cleaner for multiple conditions.
+
+Syntax:
+
+```javascript
+switch (expression) {
+  case value1:
+    statement
+    break;
+  case value2:
+    statement
+    break;
+  case value3:
+    statement
+    break;
+  default:
+    statement
+}
+```
+
+Each `case` checks if the expression matches its value. If it does, that case’s code runs. The `break` statement stops execution so it doesn’t “fall through” to the next case. The `default` block runs if no case matches, similar to an `else`.
+
+Example equivalent to multiple `if...else` statements:
+
+```javascript
+switch (i) {
+  case 25:
+    console.log("25");
+    break;
+  case 35:
+    console.log("35");
+    break;
+  case 45:
+    console.log("45");
+    break;
+  default:
+    console.log("Other");
+}
+```
+
+Best practice: always include `break` unless you intentionally want fall-through behavior.
+
+Unique to ECMAScript:
+
+* Works with any data type (not just numbers).
+* Case values can be constants, variables, or expressions.
+
+**Note:** The `switch` statement uses the **identically equal** operator (`===`), so there’s no type coercion—`"10"` is not equal to `10`.
+
+### Functions
