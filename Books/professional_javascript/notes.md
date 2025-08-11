@@ -61,6 +61,12 @@
     - [Additive Operators](#additive-operators)
       - [Add](#add)
       - [Subtract](#subtract)
+    - [Relational Operators](#relational-operators)
+    - [Equality Operators](#equality-operators)
+      - [Equal (`==`) and Not Equal (`!=`)](#equal--and-not-equal-)
+      - [Identically Equal (`===`) and Not Identically Equal (`!==`)](#identically-equal--and-not-identically-equal-)
+    - [Conditional Operator](#conditional-operator)
+    - [Nullish Coalescing Operator](#nullish-coalescing-operator)
 
 
 ## 3. Language Basics
@@ -1601,4 +1607,160 @@ The subtract operator (`-`) has the following special rules:
   let result4 = 5 - "";             // 5: 5 - 0 (empty string is converted to 0)
   let result5 = 5 - "2";            // 3: 5 - 2 (string "2" is converted to number 2)
   let result6 = 5 - null;           // 5: 5 - 0 (null is converted to 0)
+```
+#### Relational Operators
+
+```js
+let result1 = 5 < 3;            // true
+let result2 = 5 < 3;            // false
+```
+
+Special rules apply to the relational operators (`<`, `<=`, `>`, `>=`) in JavaScript:
+- If the operands are numbers, perform a numeric comparison. 
+- If the operands are strings, compare the character codes of each corresponding character in the string. 
+- If one operand is a number, convert the other operand to a number and perform a numeric comparison.
+- If an operand is an object, call `valueOf()` and use its result to perform the comparison according to the previous rules. 
+- If `valueOf()` is not available, call `toString()` and use that value according to the previous rules. 
+- If an operand is a Boolean, convert it to a number and perform the comparison.
+
+When you use a relational operator on two strings, it doesn’t compare them alphabetically. Instead, it compares the numeric character codes, one position at a time, from the first string to the second. Once a difference is found, it returns a Boolean result.
+
+Because uppercase letters have lower character codes than lowercase letters, comparisons can give unexpected results. For example, an uppercase letter might be considered “less than” a lowercase one, even if it comes later alphabetically.
+
+```js
+let result = "Brick" < "alphabet";  // true: "Brick" is less than "alphabet" based on character codes
+```
+To force a true alphabetic result, you must convert both strings to the same case (either uppercase or lowercase) before comparing them:
+
+```js
+let reuslt = "Brick".toLowerCase() < "alphabet".toLowerCase(); // true: case-insensitive comparison
+```
+
+Another sticky situation comes when comparing numbers that are strings:
+
+```js
+let result = "23" < "3"; // true: string comparison based on character codes, i.e. the character code for '2' is less than '3'
+```
+
+<img src='images/1754899470721.png' width='700'>
+
+If one of the operands is a string and the other is a number, JavaScript will convert the string to a number before performing the comparison:
+
+```js
+let result = "23" < "3"; // false: "23" is converted to 23, which is not less than 3
+```
+
+What if the string can't be converted to a number?
+
+```js
+let result = "a" < 3;      // false because "a" becomes NaN
+```
+
+As a rule, the result of any relational operation with `NaN` is always `false`. This gets interesting because in most comparisons, if a value is not less than another, it is assumed to be greater than or equal to it. However, `NaN` is not comparable to any number, so comparisons involving `NaN` always return `false`.
+
+```js
+let result = NaN < 3;     // false: NaN is not comparable
+let result = NaN >= 3;    // false: NaN is not comparable
+```
+
+#### Equality Operators
+
+Checking if two variables are equal is simple with strings, numbers, or Booleans, but it’s trickier with objects.
+
+In early ECMAScript, the equal and not-equal operators would first convert values to the same type before comparing them. This raised concerns about whether those conversions should happen at all.
+
+The solution was to introduce two operator sets:
+
+* Equal (`==`) and not equal (`!=`) convert values before comparing.
+* Identically equal (`===`) and not identically equal (`!==`) compare values without any type conversion.
+
+##### Equal (`==`) and Not Equal (`!=`)
+
+In ECMAScript, the equal operator (`==`) returns true if the operands are equal. The not-equal operator (`!=`) returns true if they are not equal. Both operators perform type coercion, meaning they convert values to a common type before comparing them.
+
+When using `==` or `!=`, ECMAScript applies these conversion rules:
+
+* If an operand is Boolean, convert it to a number: `false` becomes `0`, `true` becomes `1`.
+* If one operand is a string and the other is a number, convert the string to a number before comparing.
+* If one operand is an object and the other is not, call the object’s `valueOf()` method to get a primitive value, then compare using the above rules.
+
+When comparing values, `==` and `!=` also follow these rules:
+
+* `null` and `undefined` are considered equal to each other, but not to anything else.
+* If either operand is `NaN`, `==` returns false and `!=` returns true. Even `NaN == NaN` is false.
+* If both operands are objects, they are equal only if they reference the exact same object. Otherwise, they are not equal.
+
+| **EXPRESSION**    | **VALUE** |
+| ----------------- | --------- |
+| null == undefined | true      |
+| "NaN" == NaN      | false     |
+| 5 == NaN          | false     |
+| NaN == NaN        | false     |
+| NaN != NaN        | true      |
+| false == 0        | true      |
+| true == 1         | true      |
+| true == 2         | false     |
+| undefined == 0    | false     |
+| null == 0         | false     |
+| "5" == 5          | true      |
+
+
+##### Identically Equal (`===`) and Not Identically Equal (`!==`)
+
+The identically equal (`===`) and not identically equal (`!==`) operators work like equal (`==`) and not equal (`!=`), but they don’t convert operands before comparing them. The `===` operator returns true only if the operands are exactly equal in both value and type. 
+
+```js
+let result1 = ("55" == 55);     // true: string "55" is converted to number 55
+let result2 = ("55" === 55);    // false: strict equality, types differ (string vs number)
+```
+
+The not identically equal operator (`!==`) returns true only if the operands differ in value or type without any conversion.
+
+```js
+let result1 = ("55" != 55);    // false: because of conversion, they are equal
+let result2 = ("55" !== 55);   // true: strict inequality, types differ (string vs number
+```
+
+`null == undefined` is true because they are considered similar in value. However, `null === undefined` is false because they are different types.
+
+**Note:** Because `==` and `!=` can cause type conversion issues, it’s better to use `===` and `!==`. This ensures your comparisons also check data types, helping keep your code more reliable.
+
+#### Conditional Operator
+
+The conditional operator in ECMAScript works the same as in Java and uses this format:
+
+```js
+variable = boolean_expression ? true_value : false_value;
+```
+
+It assigns a value to a variable based on a condition. If the condition is true, `true_value` is assigned; if false, `false_value` is assigned. 
+
+```js
+let max = (num1 > num2) ? num1 : num2;  // Assigns the greater of num1 or num2 to max
+``` 
+
+#### Nullish Coalescing Operator
+
+The nullish coalescing operator (`??`) handles `null` or `undefined` values in a concise way. It returns the right-hand value only if the left-hand value is `null` or `undefined`; otherwise, it returns the left-hand value.
+
+```js
+variable = expression ?? fallbackValue;   // Assigns expression if it's not null or undefined, otherwise assigns fallbackValue
+```
+
+Without `??`, the same logic would require:
+
+```js
+variable = expression !== null && expression !== undefined ? expression : fallbackValue;
+```
+
+This is especially useful when you want default values but still allow other falsy values like `0` or `""` to remain. 
+
+Before `??`, the `||` operator was often used, but it treated all falsy values the same, which could cause unwanted results.
+
+```js
+const values = [null, undefined, 0, ""];            // Example values including null, undefined, 0, and empty string
+
+console.log(values.map(x => x || "default"));       // ["default", "default", "default", "default"]
+
+console.log(values.map(x => x ?? "default"));       // ["default", "default", 0, ""]
 ```

@@ -223,3 +223,49 @@ console.log("\nCode block 24");
   let result5 = 5 - "2";            // 3: 5 - 2 (string "2" is converted to number 2)
   let result6 = 5 - null;           // 5: 5 - 0 (null is converted to 0)
 }
+
+console.log("\nCode block 25");
+{
+  let result1 = 5 < 3;            // true
+  let result2 = 5 < 3;            // false
+
+  let result = "Brick" < "alphabet";  // true: "Brick" is less than "alphabet" based on character codes
+}
+
+console.log("\nCode block 26");
+{
+  let reusult = "Brick".toLowerCase() < "alphabet".toLowerCase(); // true: case-insensitive comparison
+}
+
+console.log("\nCode block 27");
+{
+  let result = "23" < "3"; // false: string comparison based on character codes
+}
+
+console.log("\nCode block 28");
+{
+  let result = "23" < 3;
+}
+
+console.log("\nCode block 29");
+{
+  let result = "a" < 3;      // false because "a" becomes NaN
+}
+
+console.log("\nCode block 30");
+{
+  let result = NaN < 3;     // false: NaN is not comparable
+  let result = NaN >= 3;    // false: NaN is not comparable
+}
+
+console.log("\nCode block 31");
+{
+  let result1 = ("55" == 55);     // true: string "55" is converted to number 55
+  let result2 = ("55" === 55);    // false: strict equality, types differ (string vs number)
+}
+
+console.log("\nCode block 32");
+{
+  let result1 = ("55" != 55);    // false: because of conversion, they are equal
+  let result2 = ("55" !== 55);   // true: strict inequality, types differ (string vs number)
+}
