@@ -2157,3 +2157,90 @@ Unique to ECMAScript:
 **Note:** The `switch` statement uses the **identically equal** operator (`===`), so there’s no type coercion—`"10"` is not equal to `10`.
 
 ### Functions
+
+Functions are a key part of any programming language because they let you group statements together and run them whenever needed.
+
+In ECMAScript, you can create functions using the `function` keyword or arrow syntax. You define the function name, its arguments, and the body containing the code to run.
+
+Basic syntax:
+```js
+function functionName(arg0, arg1, ... , argN) {  
+  statements  
+}
+```
+
+Example:
+```js
+function sayHi(name, message) {  
+  console.log("Hello " + name + ", " + message);  
+}
+```
+
+You call a function by writing its name, followed by parentheses containing any arguments, separated by commas if there are more than one.
+
+Example call:
+```js
+sayHi("Alice", "how are you today?");
+```
+
+Output:
+```
+Hello Alice, how are you today?
+```
+
+Here, `name` and `message` are used in string concatenation and printed with `console.log`.
+
+Functions in ECMAScript don’t have to declare a return type. They can return a value at any time using the `return` statement followed by the value.
+
+The `sum()` function takes two numbers, adds them, and returns the result. There’s no need to declare beforehand that it will return a value—using the `return` statement is enough.
+
+```js
+function sum(num1, num2) {  
+  return num1 + num2;  
+}
+```
+
+Calling it:
+```js
+const result = sum(5, 10);
+```
+
+A `return` statement ends the function immediately, so any code after it will not run:
+```js
+function sum(num1, num2) {  
+  return num1 + num2;  
+  console.log("Hello world");     // never runs  
+}
+```
+
+A function can have multiple `return` statements, each triggered by different conditions.
+
+```
+function diff(num1, num2) {  
+  if (num1 < num2) {  
+    return num2 - num1;  
+  } else {  
+    return num1 - num2;  
+  }  
+}
+```
+
+Here, `diff()` calculates the difference between two numbers. If the first is smaller, it subtracts it from the second; otherwise, it subtracts the second from the first. Each condition returns the correct result directly.
+
+A `return` statement can be used without a value. In that case, the function stops immediately and returns `undefined`. This is common in functions that don’t return a value but need to end early.
+
+```javascript
+function sayHi(name, message) {
+  return;                                         // returns undefined
+  console.log("Hello " + name + ", " + message);  // never runs
+}
+```
+**Best practice**: a function should either always return a value or never return one. Mixing the two makes code harder to understand and debug.
+
+In strict mode, functions have extra restrictions:
+
+* A function cannot be named `eval` or `arguments`.
+* Parameters cannot be named `eval` or `arguments`.
+* No two parameters can share the same name.
+
+Violating any of these rules causes a syntax error, and the code will not run.
