@@ -80,6 +80,9 @@
     - [The `break` and `continue` Statements](#the-break-and-continue-statements)
     - [The `switch` Statement](#the-switch-statement)
   - [Functions](#functions)
+- [4. Variables, Scope, and Memory](#4-variables-scope-and-memory)
+  - [Primtive and Reference Values](#primtive-and-reference-values)
+    - [Dynamic Properties](#dynamic-properties)
 
 
 ## 3. Language Basics
@@ -2244,3 +2247,60 @@ In strict mode, functions have extra restrictions:
 * No two parameters can share the same name.
 
 Violating any of these rules causes a syntax error, and the code will not run.
+
+## 4. Variables, Scope, and Memory
+
+In JavaScript, as defined by ECMA-262, variables work differently from many other languages. Since it’s loosely typed, a variable is simply a name for a value at a given moment. 
+
+There are no rules about what type of data it must hold, so both the **value** and its **type** can change during the script’s execution. This flexibility is powerful but can also lead to problems, and variables in JavaScript have even more complexities beyond this.
+
+### Primtive and Reference Values
+
+In ECMAScript, variables can hold two kinds of data: primitive values or reference values.
+
+Primitive values are simple, indivisible pieces of data. Reference values are objects, which can contain multiple values.
+
+When you assign a value to a variable, the JavaScript engine checks whether it’s a primitive or a reference value. There are seven primitive types: Undefined, Null, Boolean, Number, BigInt, String, and Symbol. These are accessed by value, meaning you work with the actual value stored in the variable.
+
+Reference values are objects stored in memory. JavaScript doesn’t allow direct access to memory locations, so you can’t directly change the memory where the object is stored. Instead, you work with a reference that points to the object. This is called access by reference.
+
+**Note:** In many languages, strings are objects and treated as reference types, but ECMAScript treats them as primitives.
+
+#### Dynamic Properties
+
+Primitive and reference values are created the same way—a variable is declared and assigned a value. The difference lies in how you can work with them afterward.
+
+With reference values, you can add, modify, or remove properties and methods at any time. For example:
+
+```javascript
+let person = new Object();
+person.name = "Alice";
+console.log(person.name); // "Alice"
+```
+
+Here, an object is stored in `person`. A `name` property is added, and it remains available until the object is destroyed or the property is deleted.
+
+Primitive values, however, can’t retain added properties. Adding one won’t throw an error, but it won’t persist:
+
+```javascript
+let name = "Alice";
+name.age = 27;
+console.log(name.age); // undefined
+```
+
+Only reference values can store dynamically added properties.
+
+Primitives can be created using literal syntax. If you use `new` with a primitive type, JavaScript creates an object that behaves like a primitive but can hold properties:
+
+```javascript
+let name1 = "Alice";
+let name2 = new String("Bob");
+
+name1.age = 27;
+name2.age = 26;
+
+console.log(name1.age);  // undefined
+console.log(name2.age);  // 26
+console.log(typeof name1); // string
+console.log(typeof name2); // object
+```
