@@ -83,6 +83,11 @@
 - [4. Variables, Scope, and Memory](#4-variables-scope-and-memory)
   - [Primtive and Reference Values](#primtive-and-reference-values)
     - [Dynamic Properties](#dynamic-properties)
+    - [Copying Values](#copying-values)
+    - [Argument Passing (Pass-by-Value)](#argument-passing-pass-by-value)
+    - [Determining Type (`typeof` and `instanceof`)](#determining-type-typeof-and-instanceof)
+  - [Execution Context and Scope](#execution-context-and-scope)
+    - [Scope Chain](#scope-chain)
 
 
 ## 3. Language Basics
@@ -2304,3 +2309,207 @@ console.log(name2.age);  // 26
 console.log(typeof name1); // string
 console.log(typeof name2); // object
 ```
+
+#### Copying Values
+
+Beyond how they’re stored, primitive and reference values also behave differently when copied to another variable.
+
+When you copy a primitive value, the value itself is duplicated and stored separately in the new variable. For example:
+
+```javascript
+let num1 = 5;
+let num2 = num1;
+```
+
+Here, `num1` holds the value `5`. When `num2` is assigned `num1`, it receives its own copy of `5`. The two variables are independent—changing one does not affect the other.
+
+When you assign a reference value from one variable to another, what gets copied is the reference—a pointer to an object in the heap—not the object itself.
+
+This means both variables end up pointing to the same object, so changes through one are visible through the other. For example:
+
+```javascript
+let obj1 = new Object();
+let obj2 = obj1;
+
+obj1.name = "Alice";
+console.log(obj2.name); // "Alice"
+```
+
+Here, `obj1` is assigned a new object. Assigning `obj1` to `obj2` makes both variables reference the same object. Setting `name` on `obj1` makes it accessible via `obj2` as well, since they share the same underlying object.
+
+#### Argument Passing (Pass-by-Value)
+
+In ECMAScript, all function arguments are passed by value. This means the value from outside the function is copied into a local variable inside the function—just like assigning one variable’s value to another.
+
+If the argument is a primitive, it behaves like a primitive copy. If it’s a reference value, the copy contains the reference (pointer) to the object, not the object itself. This can cause confusion, because variables can be accessed by value or reference, but arguments are always *passed* by value.
+
+When passing a primitive:
+
+```javascript
+function addTen(num) {
+  num += 10;
+  return num;
+}
+
+let count = 20;
+let result = addTen(count);
+
+console.log(count);  // 20 - unchanged
+console.log(result); // 30
+```
+
+Here, `count` is copied into `num`. Changing `num` inside the function does not affect `count` outside.
+
+When passing an object:
+
+```javascript
+function setName(obj) {
+  obj.name = "Alice";
+}
+
+let person = new Object();
+setName(person);
+
+console.log(person.name); // "Alice"
+```
+
+In this case, the *reference* to the object is copied into `obj`. Both `person` and `obj` point to the same object in the heap, so changing `obj.name` updates the object seen by `person`.
+
+Many developers mistake this behavior for pass-by-reference. But it’s still pass-by-value—what’s being copied is the reference itself, not the actual object.
+
+To prove objects are passed by value, consider this example:
+
+```javascript
+function setName(obj) {     // Object reference is passed by value
+  obj.name = "Alice";       // This updates the original object
+  obj = new Object();       // This reassigns obj to a new object
+  obj.name = "Greg";        // This updates the new object, not the original
+}
+
+let person = new Object();
+setName(person);            // person remains unchanged
+console.log(person.name);   // "Alice"
+```
+
+In this version, `person` is passed into `setName()`. First, `obj.name = "Alice"` updates the original object, so `person.name` becomes `"Alice"`. Then, `obj` is reassigned to a new object, and that new object gets `name = "Greg"`.
+
+If JavaScript passed objects by reference, `person` would now point to the `"Greg"` object. But it doesn’t—`person.name` is still `"Alice"`.
+
+This happens because the function only receives a **copy of the reference**. Reassigning `obj` changes the local copy, not the original reference. The new object exists only inside the function and is destroyed after execution.
+
+**In short:** in ECMAScript, function arguments are just local variables, even for objects.
+
+#### Determining Type (`typeof` and `instanceof`)
+
+The `typeof` operator is the most reliable way to check if a variable holds a primitive type—specifically a string, number, Boolean, or undefined.
+
+If the value is an object or `null`, `typeof` returns `"object"`. For example:
+
+```javascript
+let s = "Alice";
+let b = true;
+let i = 22;
+let u;
+let n = null;
+let o = new Object();
+
+console.log(typeof s); // string
+console.log(typeof i); // number
+console.log(typeof b); // boolean
+console.log(typeof u); // undefined
+console.log(typeof n); // object
+console.log(typeof o); // object
+```
+
+While `typeof` works well for primitives, it’s less helpful for reference values because it can’t tell you *what kind* of object you have.
+
+To identify specific object types, ECMAScript provides the `instanceof` operator:
+
+```javascript
+result = variable instanceof constructor;
+```
+
+`instanceof` returns `true` if the variable is an instance of the given reference type, determined via its prototype chain. For example:
+
+```javascript
+console.log(person instanceof Object);  // is person an Object?
+console.log(colors instanceof Array);   // is colors an Array?
+console.log(pattern instanceof RegExp); // is pattern a RegExp?
+```
+
+All reference values are instances of `Object`, so `instanceof` will always return `true` for them when used with `Object`. For primitives, it always returns `false` because they aren’t objects.
+
+### Execution Context and Scope
+
+In JavaScript, the **execution context** (or simply “context”) determines what data a variable or function can access and how it behaves.
+
+Each execution context has a **variable object** that stores all variables and functions defined in that context. This object isn’t directly accessible in code—it’s managed internally by the JavaScript engine.
+
+The **global execution context** is the outermost context. In browsers, this is tied to the `window` object, so global variables and functions declared with `var` become properties of `window`. However, `let` and `const` declarations at the top level are not added to `window` (though they’re still found via the scope chain). The global context persists until the application ends.
+
+Every function call creates its own execution context, which is pushed onto a **context stack**. When the function finishes, its context is popped off the stack, and control returns to the previous context.
+
+#### Scope Chain
+
+When code runs inside a context, a **scope chain** of variable objects is created. This chain provides ordered access to all variables and functions the current context can use.
+
+* The first object in the scope chain is the variable object of the current context.
+* For functions, this is the **activation object**, which starts with a single property: `arguments`.
+* Next in the chain is the variable object of the containing context, then its containing context, and so on until the global context.
+
+When looking for a variable, JavaScript searches from the front of the chain toward the global object. If it’s not found, an error occurs.
+
+**Example 1 — Accessing global variables inside a function:**
+
+```javascript
+var color = "blue";           // Exists within the variable object of the global context
+
+function changeColor() {      // This function has its own variable object
+  if (color === "blue") {     // Color is accessible here because it's in the variable object of the global context
+    color = "red";
+  } else {
+    color = "blue";
+  }
+}
+
+changeColor();               
+```
+
+Here, `changeColor()` has a scope chain with two objects:
+
+1. Its own variable object (with `arguments`).
+2. The global variable object (which contains `color`).
+
+`color` is accessible in the function because it’s found in the global context.
+
+**Example 2 — Nested scope access:**
+
+```javascript
+var color = "blue";                         // Exists in the global context
+
+function changeColor() {                    // Exists in the global context
+  let anotherColor = "red";                 // Exists in the changeColor() context
+
+  function swapColors() {                   // Exists in the changeColor() context
+    let tempColor = anotherColor;           // Exists in the swapColors() context
+    anotherColor = color;                   // Can access anotherColor from changeColor() context
+    color = tempColor;                      // Can access color from the global context
+
+    // color, anotherColor, and tempColor are all accessible here
+  }
+
+  // color and anotherColor are accessible here, but not tempColor
+  swapColors();                             // Calls swapColors() which has its own context
+}
+
+// only color is accessible here
+changeColor();                              // Exists in the global context
+```
+
+Here, there are **three execution contexts**:
+
+1. **Global context** — contains `color` and `changeColor()`.
+2. **`changeColor()` context** — contains `anotherColor` and `swapColors()`, and can access `color` from the global context.
+3. **`swapColors()` context** — contains `tempColor`, and can access `anotherColor` from `changeColor()` and `color` from the global context.
+
+Variables are accessible only in their own context and any child contexts, not in parent contexts.
