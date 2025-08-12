@@ -86,8 +86,14 @@
     - [Copying Values](#copying-values)
     - [Argument Passing (Pass-by-Value)](#argument-passing-pass-by-value)
     - [Determining Type (`typeof` and `instanceof`)](#determining-type-typeof-and-instanceof)
-  - [Execution Context and Scope](#execution-context-and-scope)
+  - [Execution Context and Scope Chain](#execution-context-and-scope-chain)
     - [Scope Chain](#scope-chain)
+    - [Scope Chain Augmentation (`with` and `catch`)](#scope-chain-augmentation-with-and-catch)
+    - [Variable Declaration](#variable-declaration)
+      - [Function Scope Declaration Using `var`](#function-scope-declaration-using-var)
+      - [Block Scope Declaration Using `let`](#block-scope-declaration-using-let)
+      - [Constant Declaration Using `const`](#constant-declaration-using-const)
+      - [Identifier Lookup](#identifier-lookup)
 
 
 ## 3. Language Basics
@@ -2439,7 +2445,7 @@ console.log(pattern instanceof RegExp); // is pattern a RegExp?
 
 All reference values are instances of `Object`, so `instanceof` will always return `true` for them when used with `Object`. For primitives, it always returns `false` because they aren’t objects.
 
-### Execution Context and Scope
+### Execution Context and Scope Chain
 
 In JavaScript, the **execution context** (or simply “context”) determines what data a variable or function can access and how it behaves.
 
@@ -2513,3 +2519,291 @@ Here, there are **three execution contexts**:
 3. **`swapColors()` context** — contains `tempColor`, and can access `anotherColor` from `changeColor()` and `color` from the global context.
 
 Variables are accessible only in their own context and any child contexts, not in parent contexts.
+
+**Note:** Function arguments are treated as variables and follow the same access rules as any other variable within their execution context.
+
+#### Scope Chain Augmentation (`with` and `catch`)
+
+JavaScript has two main types of execution contexts: **global** and **function** (plus a third inside `eval()` calls).
+
+The scope chain can also be temporarily **augmented** in certain cases—specifically:
+
+* Entering a **`catch` block** in a `try...catch` statement.
+* Using a **`with` statement**.
+
+Both temporarily add a variable object to the **front** of the scope chain:
+
+* For `with`, the specified object is added.
+* For `catch`, a new variable object is created containing the thrown error object.
+
+**Example:**
+
+```javascript
+function buildUrl() {
+  let qs = "?debug=true";
+
+  with (location) {           // `location` is added to the front of the scope chain, i.e. it becomes the first variable object
+    let url = href + qs;
+  }
+
+  return url;
+}
+```
+
+Here, the `with` statement adds the `location` object to the front of the scope chain.
+
+* `href` refers to `location.href` from the `location` variable object.
+* `qs` comes from the `buildUrl()` function’s variable object.
+* `url` is declared inside the `with` block, but it still belongs to the function’s context, so it can be returned.
+
+#### Variable Declaration
+
+ECMAScript variables can either be function scoped or block scoped. Furthermore, a block scoped variable can be declared as a const.
+
+##### Function Scope Declaration Using `var`
+
+When you declare a variable with **`var`**, it’s added to the **nearest execution context**:
+
+* Inside a function → goes into that function’s local context.
+* Inside a `with` block → still goes into the containing function context.
+
+If you assign to a variable **without declaring it** (no `var`, `let`, or `const`), JavaScript automatically creates it in the **global context**.
+
+**Example — declared with `var` (local variable):**
+
+```javascript
+function add(num1, num2) {
+  var sum = num1 + num2;
+  return sum;
+}
+
+let result = add(10, 20); // 30
+console.log(sum);         // Error: sum is not defined
+```
+
+Here, `sum` exists only inside `add()` because it’s declared with `var`.
+
+**Example — undeclared (becomes global):**
+
+```javascript
+function add(num1, num2) {
+  sum = num1 + num2;       // no var, let, or const
+  return sum;
+}
+
+let result = add(10, 20); // 30
+console.log(sum);         // 30
+```
+
+Here, `sum` is created in the global context, so it’s still accessible after `add()` finishes. 
+
+In **strict mode**, this would cause an error instead of creating a global.
+
+
+###### Hoisting
+
+`var` declarations are **hoisted**—JavaScript moves the declaration (not the assignment) to the top of its scope before running the code.
+This means you can reference a `var` variable before its declaration without getting a `ReferenceError`; you’ll get `undefined` instead.
+
+**Example — global scope:**
+
+```javascript
+console.log(name); // undefined
+var name = 'Jake';
+```
+
+Equivalent to:
+
+```javascript
+var name;
+console.log(name); // undefined
+name = 'Jake';
+```
+
+**Example — inside a function:**
+
+```javascript
+function fn() {
+  console.log(name); // undefined
+  var name = 'Jake';
+}
+```
+
+Equivalent to:
+
+```javascript
+function fn() {
+  var name;
+  console.log(name); // undefined
+  name = 'Jake';
+}
+```
+Hoisting can make code technically valid but confusing, so it’s best to declare variables at the top of their scope intentionally.
+
+
+##### Block Scope Declaration Using `let`
+
+`let` works similarly to `var`, but it has block scope instead of function scope. A block is the nearest set of curly braces `{}`. This includes `if` statements, `while` loops, functions, and even standalone blocks.
+
+Example:
+
+```javascript
+if (true) {
+  let a;
+}
+console.log(a);  // ReferenceError: a is not defined
+
+while (true) {
+  let b;
+}
+console.log(b);  // ReferenceError: b is not defined
+
+function foo() {
+  let c;
+}
+console.log(c);  // ReferenceError: c is not defined
+// Same behavior with var here — still causes an error
+
+{
+  let d;
+}
+console.log(d);  // ReferenceError: d is not defined
+```
+
+Unlike `var`, you cannot declare the same `let` variable twice in the same block.
+
+```javascript
+var a;
+var a; // No error
+
+{
+  let b;
+  let b; // SyntaxError: Identifier 'b' has already been declared
+}
+```
+
+`let` is especially useful in loops. A `var` iterator leaks outside the loop after it finishes, while a `let` iterator does not.
+
+```javascript
+for (var i = 0; i < 10; ++i) {}
+console.log(i);  // 10
+
+for (let j = 0; j < 10; ++j) {}
+console.log(j);  // ReferenceError: j is not defined
+```
+
+Technically, `let` is hoisted, but it’s in the *temporal dead zone* until its declaration is reached. This means you cannot use it before it’s declared, unlike `var`. For practical purposes, treat `let` as if it is **not** hoisted.
+
+##### Constant Declaration Using `const`
+
+`const` variables must be assigned a value when declared. Once assigned, they cannot be reassigned.
+
+```javascript
+const a; // SyntaxError: Missing initializer in const declaration
+
+const b = 3;
+console.log(b); // 3
+b = 4; // TypeError: Assignment to a constant variable
+```
+
+Like `let`, `const` is block-scoped:
+
+```javascript
+if (true) {
+  const a = 0;
+}
+console.log(a); // ReferenceError
+
+while (true) {
+  const b = 1;
+}
+console.log(b); // ReferenceError
+
+function foo() {
+  const c = 2;
+}
+console.log(c); // ReferenceError
+
+{
+  const d = 3;
+}
+console.log(d); // ReferenceError
+```
+
+The restriction applies only to the variable binding. If the variable stores an object or array, you can still modify its contents:
+
+```javascript
+const o1 = {};
+o1 = {}; // TypeError
+
+const o2 = {};
+o2.name = 'Jake';
+console.log(o2.name); // 'Jake'
+```
+
+To make an object fully immutable, use `Object.freeze()`. Changes will silently fail:
+
+```javascript
+const o3 = Object.freeze({});
+o3.name = 'Jake';
+console.log(o3.name); // undefined
+```
+
+Since `const` references never change, JavaScript engines like V8 can optimize performance by replacing lookups with the actual value.
+
+**Best practice:** Use `const` by default, and only use `let` if reassignment is necessary.
+
+##### Identifier Lookup
+
+When JavaScript reads or writes an identifier, it searches to find its value. The search begins in the current scope.
+
+If the identifier exists there, it’s used immediately. If not, the search moves up the scope chain. Since objects in the chain can have prototype chains, those may also be searched.
+
+The process continues until the global scope is reached. If it’s still not found, the variable is undeclared.
+
+Example:
+
+```javascript
+var color = 'blue';
+
+function getColor() {
+  return color;
+}
+
+console.log(getColor());        // 'blue'
+```
+
+`getColor()` first checks its own scope for `color`—nothing is found. It then checks the global scope, where `color` is `'blue'`.
+
+A local variable with the same name as an outer one always takes priority:
+
+```javascript
+var color = 'blue';
+
+function getColor() {
+  let color = 'red';
+  return color;
+}
+
+console.log(getColor());        // 'red'
+```
+
+`let` and `const` work the same way but can add extra scope layers:
+
+```javascript
+var color = 'blue';
+
+function getColor() {
+  let color = 'red';
+  {
+    let color = 'green';
+    return color;
+  }
+}
+
+console.log(getColor());        // 'green'
+```
+
+Here, `'green'` is found first in the innermost block. To access the global `color` from inside, use `window.color`.
+
+Local variables are usually faster to access than globals, but modern engines make this difference small.
