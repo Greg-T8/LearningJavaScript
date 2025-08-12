@@ -93,7 +93,14 @@
       - [Function Scope Declaration Using `var`](#function-scope-declaration-using-var)
       - [Block Scope Declaration Using `let`](#block-scope-declaration-using-let)
       - [Constant Declaration Using `const`](#constant-declaration-using-const)
-      - [Identifier Lookup](#identifier-lookup)
+      - [Identifier Lookup (Scope Chain)](#identifier-lookup-scope-chain)
+  - [Garbage Collection](#garbage-collection)
+    - [Performance](#performance)
+    - [Managing Memory](#managing-memory)
+    - [Performance Boosts with `const` and `let` Declarations](#performance-boosts-with-const-and-let-declarations)
+    - [Hidden Classes and the delete Operation](#hidden-classes-and-the-delete-operation)
+    - [Memory Leaks](#memory-leaks)
+    - [Static Allocation and Object Pools](#static-allocation-and-object-pools)
 
 
 ## 3. Language Basics
@@ -2753,7 +2760,7 @@ Since `const` references never change, JavaScript engines like V8 can optimize p
 
 **Best practice:** Use `const` by default, and only use `let` if reassignment is necessary.
 
-##### Identifier Lookup
+##### Identifier Lookup (Scope Chain)
 
 When JavaScript reads or writes an identifier, it searches to find its value. The search begins in the current scope.
 
@@ -2767,7 +2774,8 @@ Example:
 var color = 'blue';
 
 function getColor() {
-  return color;
+  return color;                 // Looks for color in the current scope but
+                                // doesn't find it, so it checks the global scope
 }
 
 console.log(getColor());        // 'blue'
@@ -2781,7 +2789,7 @@ A local variable with the same name as an outer one always takes priority:
 var color = 'blue';
 
 function getColor() {
-  let color = 'red';
+  let color = 'red';            // This color shadows the global one, meaning it hides the global variable
   return color;
 }
 
@@ -2796,7 +2804,7 @@ var color = 'blue';
 function getColor() {
   let color = 'red';
   {
-    let color = 'green';
+    let color = 'green';        // This color shadows the outer one, creating a new scope
     return color;
   }
 }
@@ -2806,4 +2814,232 @@ console.log(getColor());        // 'green'
 
 Here, `'green'` is found first in the innermost block. To access the global `color` from inside, use `window.color`.
 
-Local variables are usually faster to access than globals, but modern engines make this difference small.
+Local variables are usually faster to access than globals, but modern engines make this difference small. 
+
+### Garbage Collection
+
+JavaScript is a garbage-collected language, meaning the runtime environment handles memory management during execution.
+
+In languages like C and C++, developers must track memory usage themselves, which often causes issues. JavaScript removes this burden by automatically allocating memory when needed and freeing it when no longer in use.
+
+The basic concept is to find variables that will no longer be used and release their associated memory. This happens periodically, with the garbage collector running at certain intervals or predefined points during execution.
+
+Garbage collection is imperfect because determining if a piece of memory will be needed in the future is “undecidable” — it can’t be solved by a perfect algorithm.
+
+For example, a local variable in a function is created during execution, with memory allocated on the stack (and sometimes the heap). The function uses the variable, then ends. Once the function ends, the variable is no longer needed, so its memory can be reclaimed. In this simple case, the need for cleanup is obvious.
+
+However, in more complex scenarios, it’s harder to determine if memory can be freed. The garbage collector must track which variables are still usable and decide which ones to reclaim. The exact strategy can vary between JavaScript implementations.
+
+#### Performance
+
+The garbage collector runs periodically, and it can become expensive if many variables are allocated in memory. This makes the timing of garbage collection important.
+
+On mobile devices with limited memory, garbage collection can slow down performance and reduce rendering framerate. Since you can’t predict when it will run, the best approach is to write code that lets garbage collection work efficiently whenever it’s triggered.
+
+Modern garbage collectors decide when to run using heuristics from the JavaScript runtime. These vary by engine but generally depend on the size and number of allocated objects.
+
+For example, according to a 2016 V8 blog post: after a full garbage collection, V8’s heap-growing strategy schedules the next collection based on the amount of live objects, with some extra buffer space.
+
+#### Managing Memory
+
+In garbage-collected environments, developers usually don’t need to manage memory manually. However, JavaScript’s memory management works differently because of the constraints of its runtime environment.
+
+Web browsers give JavaScript much less available memory than desktop applications, and mobile browsers provide even less. This is mainly for security, preventing a web page from consuming all system memory and crashing the OS. These limits affect variable allocation, the call stack, and even how many statements can run in a single thread.
+
+Minimizing memory usage improves performance. The best practice is to keep only the data you need and remove unnecessary references. When data is no longer needed, set its value to `null`—this is called dereferencing. Dereferencing is especially important for global variables and properties of global objects. Local variables are dereferenced automatically when they go out of scope.
+
+```javascript
+function createPerson(name) {
+    let localPerson = new Object();
+    localPerson.name = name;
+    return localPerson;
+}
+
+let globalPerson = createPerson("Alice");
+
+// do something with globalPerson
+
+globalPerson = null;                        // As a best practice, dereference globalPerson when no longer needed
+```
+
+Here, `createPerson()` creates `localPerson` and returns it. The returned object is stored in `globalPerson`. After `createPerson()` finishes, `localPerson` is automatically dereferenced because it goes out of scope. But `globalPerson` is global, so it should be explicitly dereferenced when it’s no longer needed, as in the last line.
+
+Dereferencing doesn’t free memory instantly—it just removes the reference so the garbage collector can reclaim it during its next cycle.
+
+#### Performance Boosts with `const` and `let` Declarations
+
+Because `const` and `let` are block-scoped rather than function-scoped, the garbage collector may mark variables for cleanup sooner than with var. This happens when the block scope ends much earlier than the function scope.
+
+#### Hidden Classes and the delete Operation
+
+The V8 JavaScript engine, the most widely used browser engine, uses “hidden classes” when compiling JavaScript into machine code. This can affect performance-sensitive code. At runtime, V8 assigns a hidden class to each object to track its property layout. Objects sharing the same hidden class perform better, but this isn’t always possible.
+
+
+```javascript
+function Article() {
+  this.title = 'Inauguration Ceremony Features Kazoo Band';
+}
+
+let a1 = new Article();
+let a2 = new Article();
+```
+
+Here, both instances share the same hidden class because they use the same constructor and prototype.
+
+If you add a property dynamically:
+
+```javascript
+a2.author = 'Jake';
+```
+
+the hidden classes diverge, which can hurt performance. To prevent this, declare all properties in the constructor:
+
+```javascript
+function Article(opt_author) {
+  this.title = 'Inauguration Ceremony Features Kazoo Band';
+  this.author = opt_author;
+}
+
+let a1 = new Article();
+let a2 = new Article('Jake');
+```
+
+Now both instances share the same hidden class.
+
+Using `delete` can also cause hidden class fragmentation:
+
+```javascript
+function Article() {
+  this.title = 'Inauguration Ceremony Features Kazoo Band';
+  this.author = 'Jake';
+}
+
+let a1 = new Article();
+let a2 = new Article();
+
+delete a1.author;
+```
+
+After deletion, the hidden classes differ. Instead, set unwanted properties to `null` to keep the hidden classes intact:
+
+```javascript
+function Article() {
+  this.title = 'Inauguration Ceremony Features Kazoo Band';
+  this.author = 'Jake';
+}
+
+let a1 = new Article();
+let a2 = new Article();
+
+a1.author = null;
+```
+
+#### Memory Leaks
+
+Poorly written JavaScript can cause subtle memory leaks. On memory-limited devices or in frequently called functions, this can be a serious issue. Most leaks come from unwanted references.
+
+A common example is accidentally creating global variables:
+
+```javascript
+function setName() {
+  name = 'Jake';   // Becomes window.name = 'Jake'
+}
+```
+
+Since `window` is never cleaned up during the page’s lifetime, such properties persist. The fix is to declare variables with `var`, `let`, or `const` so they go out of scope when the function ends.
+
+Interval timers can also leak memory:
+
+```javascript
+let name = 'Jake';
+setInterval(() => {
+  console.log(name);
+}, 100);
+```
+
+The interval’s callback keeps a reference to `name` through a closure, preventing cleanup while the timer runs.
+
+Closures in general are a frequent cause of leaks:
+
+```javascript
+let outer = function() {
+  let name = 'Jake';
+  return function() {
+    return name;            // Name remains in memory as long as the inner function exists
+  };
+};
+```
+
+Here, `name` remains in memory as long as the returned inner function exists. If `name` held a large object instead of a short string, the impact could be severe.
+
+#### Static Allocation and Object Pools
+
+When aiming for maximum JavaScript performance, one way to improve speed is to reduce the frequency of garbage collection (GC). While GC timing can’t be directly controlled, you can work around the heuristics browsers use to trigger it.
+
+One major factor in GC scheduling is **object churn**—how often objects are created and quickly discarded. Frequent short-lived object creation leads to more GC cycles, slowing the app.
+
+Example of high churn:
+
+```javascript
+function addVector(a, b) {
+  let resultant = new Vector();
+  resultant.x = a.x + b.x;
+  resultant.y = a.y + b.y;
+  return resultant;
+}
+```
+
+If called often, the short-lived `resultant` objects trigger more GC runs.
+
+To avoid this, reuse objects:
+
+```javascript
+function addVector(a, b, resultant) {
+  resultant.x = a.x + b.x;
+  resultant.y = a.y + b.y;
+  return resultant;
+}
+```
+
+This requires the `resultant` object to be created elsewhere.
+
+A common strategy is **object pooling**—preallocating and recycling objects instead of creating new ones each time:
+
+```javascript
+// vectorPool is the object pool
+let v1 = vectorPool.allocate();
+let v2 = vectorPool.allocate();
+let v3 = vectorPool.allocate();
+
+v1.x = 10;
+v1.y = 5;
+v2.x = -3;
+v2.y = -6;
+
+addVector(v1, v2, v3);
+
+console.log([v3.x, v3.y]);   // [7, -1]
+
+vectorPool.free(v1);
+vectorPool.free(v2);
+vectorPool.free(v3);
+
+// Null references if they point to other objects
+v1 = null;
+v2 = null;
+v3 = null;
+```
+
+If the pool grows only when needed and reuses objects, memory usage will level off and avoid churn.
+
+When storing pooled objects in arrays, beware of resizing:
+
+```javascript
+let vectorList = new Array(100);
+let vector = new Vector();
+vectorList.push(vector);   // May trigger array resize to 200
+```
+
+This deletion-and-resizing can prompt GC. Instead, preallocate arrays at the required size to avoid resizing overhead.
+
+**Note:** Static allocation is an extreme optimization and only worthwhile when GC is a proven bottleneck. In most cases, it’s premature optimization.
